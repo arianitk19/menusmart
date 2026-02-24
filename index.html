@@ -2,280 +2,203 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MenuSmart PRO | Ultra Experience</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MenuSmart PRO | OS</title>
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;800&family=Instrument+Serif:italic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --p: #FF5C00; --bg: #050505; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow: hidden; }
-        .serif { font-family: 'Instrument Serif', serif; }
+        :root { --p: #FF5C00; --bg: #000; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
 
-        /* Custom Cursor */
-        #cursor { width: 20px; height: 20px; background: var(--p); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transition: transform 0.1s; }
+        /* Canvas Background for Dynamic Particles */
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.6; }
 
-        /* Modern Sidebar */
-        #sidebar {
-            position: fixed; top: 0; left: -100%; width: 400px; height: 100vh;
-            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(40px);
-            z-index: 500; border-right: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.8s cubic-bezier(0.9, 0, 0.1, 1);
-        }
-        #sidebar.active { left: 0; }
-
-        /* Liquid Background */
-        .liquid-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
-        }
-        .liquid-blob {
-            position: absolute; width: 60vw; height: 60vw; background: var(--p);
-            filter: blur(120px); border-radius: 50%; opacity: 0.1;
-            animation: move 25s infinite alternate;
-        }
-
-        @keyframes move { 
-            0% { transform: translate(-10%, -10%); } 
-            100% { transform: translate(30%, 20%) rotate(90deg); opacity: 0.15; } 
-        }
-
-        /* Glass Cards */
-        .card-pro {
-            background: rgba(255,255,255,0.02);
+        .bento-card {
+            background: rgba(20, 20, 20, 0.7);
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 40px;
-            backdrop-filter: blur(20px);
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .card-pro:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: var(--p);
-            transform: scale(1.02) translateY(-10px);
+            backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Full Screen Modal */
-        .modal-os {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 1000; display: none; opacity: 0;
-            backdrop-filter: blur(30px);
+        /* Glassmorphism Navigation */
+        .app-nav {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 450px; height: 75px;
+            background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 28px;
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 1000;
         }
 
-        /* Button Glow */
-        .glow-trigger {
-            position: relative; overflow: hidden;
-            background: #fff; color: #000; font-weight: 900;
-            padding: 24px 48px; border-radius: 100px;
-            box-shadow: 0 0 40px rgba(255, 92, 0, 0.2);
-        }
+        .active-dot { position: absolute; bottom: -8px; width: 4px; height: 4px; background: var(--p); border-radius: 50%; }
+        
+        /* Smooth Scrolling */
+        .hide-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="hide-scroll">
 
-    <div id="cursor"></div>
-    <div class="liquid-bg"><div class="liquid-blob"></div></div>
+    <canvas id="bg-canvas"></canvas>
 
-    <div id="intro" class="fixed inset-0 bg-black z-[2000] flex items-center justify-center">
-        <div class="text-center">
-            <h2 class="text-7xl font-black tracking-tighter intro-txt opacity-0">MENUSMART</h2>
-            <p class="text-[10px] tracking-[10px] text-orange-600 mt-4 intro-sub opacity-0 uppercase">Digital Excellence</p>
+    <header class="p-6 flex justify-between items-center fixed top-0 w-full z-50 bg-black/20 backdrop-blur-md">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center font-black italic">M</div>
+            <h1 class="font-black text-lg tracking-tighter">MenuSmart <span class="text-orange-600">PRO</span></h1>
         </div>
-    </div>
-
-    <aside id="sidebar" class="flex flex-col p-12">
-        <button onclick="toggleMenu()" class="self-end text-zinc-500 hover:text-white transition">
-            <i class="fa-solid fa-xmark text-3xl"></i>
-        </button>
-        <div class="mt-20 space-y-12">
-            <a href="#" class="block group">
-                <span class="text-xs font-bold text-orange-600 tracking-widest block mb-2">01</span>
-                <span class="text-5xl font-black group-hover:translate-x-4 transition-transform block">BALLINA</span>
-            </a>
-            <a href="#" class="block group">
-                <span class="text-xs font-bold text-orange-600 tracking-widest block mb-2">02</span>
-                <span class="text-5xl font-black group-hover:translate-x-4 transition-transform block">NDËRTUESI</span>
-            </a>
-            <a href="#" class="block group">
-                <span class="text-xs font-bold text-orange-600 tracking-widest block mb-2">03</span>
-                <span class="text-5xl font-black group-hover:translate-x-4 transition-transform block">OFERTAT</span>
-            </a>
+        <div class="flex gap-4">
+            <i class="fa-solid fa-bell text-zinc-500"></i>
+            <div class="w-6 h-6 rounded-full bg-zinc-800 border border-white/10"></div>
         </div>
-        <div class="mt-auto border-t border-white/5 pt-8">
-            <div class="flex gap-4">
-                <button onclick="setLang('al')" class="text-xs font-bold text-orange-600">AL</button>
-                <button onclick="setLang('en')" class="text-xs font-bold text-zinc-500">EN</button>
-                <button onclick="setLang('de')" class="text-xs font-bold text-zinc-500">DE</button>
-            </div>
-        </div>
-    </aside>
-
-    <header class="fixed top-0 w-full p-10 flex justify-between items-center z-[400]">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center">
-                <div class="w-2 h-6 bg-black rotate-12"></div>
-            </div>
-            <span class="text-2xl font-black tracking-tighter">MS.</span>
-        </div>
-        <button onclick="toggleMenu()" class="flex items-center gap-6 group">
-            <span class="text-[10px] font-black tracking-[5px] text-zinc-400 group-hover:text-white">DASHBOARD</span>
-            <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                <i class="fa-solid fa-bars-staggered"></i>
-            </div>
-        </button>
     </header>
 
-    <main class="h-screen overflow-y-auto hide-scroll pt-40 px-6 md:px-20">
+    <main class="pt-28 px-5 pb-32 space-y-6">
         
-        <section class="max-w-7xl mx-auto mb-60">
-            <div class="flex flex-col md:flex-row gap-20 items-end">
-                <div class="flex-1">
-                    <span class="text-[10px] font-black tracking-[8px] text-orange-600 uppercase mb-6 block">Sistemi Operativ i Gastronomisë</span>
-                    <h1 class="text-[14vw] md:text-[10vw] font-black leading-[0.8] tracking-tighter mb-10">
-                        EKSKLUZIVE<br><span class="serif italic font-light text-zinc-500">edhe</span> <span class="text-white">REALE.</span>
-                    </h1>
+        <section class="grid grid-cols-2 gap-4">
+            <div class="bento-card col-span-2 h-32 flex flex-row items-center justify-between bg-gradient-to-r from-orange-600/20 to-transparent">
+                <div>
+                    <p class="text-[10px] font-bold text-orange-500 uppercase tracking-[3px]">Trafiku Live</p>
+                    <h2 class="text-4xl font-black tabular-nums" id="live-counter">482</h2>
+                    <p class="text-[10px] text-zinc-500">Skanime në 24 orët e fundit</p>
                 </div>
-                <div class="w-full md:w-1/3 pb-10">
-                    <p class="text-zinc-400 text-xl leading-relaxed">
-                        MenuSmart nuk është uebfaqe. Është një armë digjitale që rrit profitin tuaj duke ofruar përvojën më të shpejtë në botë.
-                    </p>
+                <div class="flex gap-1 items-end h-12">
+                    <div class="w-1 bg-orange-600 h-1/2 rounded-full animate-bounce"></div>
+                    <div class="w-1 bg-orange-600 h-full rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-1 bg-orange-600 h-2/3 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
                 </div>
             </div>
-        </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-40">
-            <div class="card-pro p-12 min-h-[400px] flex flex-col justify-between">
-                <div class="w-14 h-14 bg-orange-600/10 rounded-2xl flex items-center justify-center">
-                    <i class="fa-solid fa-bolt-lightning text-orange-600"></i>
+            <a href="builder.html" class="bento-card h-44 flex flex-col justify-between group active:scale-95 transition">
+                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-orange-600 transition">
+                    <i class="fa-solid fa-wand-magic-sparkles text-orange-600 group-hover:text-white"></i>
                 </div>
                 <div>
-                    <h3 class="text-3xl font-black mb-4">SHPEJTËSI NATIVE</h3>
-                    <p class="text-zinc-500">Teknologjia PWA e bën menunë tuaj të ndihet si një aplikacion i instaluar, pa shkarkim.</p>
+                    <h3 class="font-black text-sm uppercase">Studio</h3>
+                    <p class="text-[10px] text-zinc-500">Edito Menunë</p>
                 </div>
-            </div>
+            </a>
 
-            <div class="card-pro p-12 min-h-[400px] flex flex-col justify-between bg-white text-black border-none">
-                <div class="w-14 h-14 bg-black rounded-2xl flex items-center justify-center">
+            <a href="qr-code.html" class="bento-card h-44 flex flex-col justify-between active:scale-95 transition">
+                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
                     <i class="fa-solid fa-qrcode text-white"></i>
                 </div>
                 <div>
-                    <h3 class="text-3xl font-black mb-4">QR DINAMIK</h3>
-                    <p class="text-zinc-700">Ndryshoni ofertat dhe çmimet në çdo sekondë. Kodi juaj mbetet i njëjtë përgjithmonë.</p>
+                    <h3 class="font-black text-sm uppercase">QR Engine</h3>
+                    <p class="text-[10px] text-zinc-500">Printo Kodin</p>
+                </div>
+            </a>
+
+            <div class="bento-card col-span-2 bg-zinc-900/30">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-xs font-black uppercase tracking-widest text-zinc-400">Inventory Alert</h4>
+                    <span class="text-[9px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full">3 Artikuj Low</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-zinc-300">Filetë Viçi</span>
+                        <span class="font-bold text-red-500">2kg mbetur</span>
+                    </div>
+                    <div class="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
+                        <div class="w-1/5 h-full bg-red-500"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card-pro p-12 min-h-[400px] flex flex-col justify-between">
-                <div class="w-14 h-14 bg-purple-600/10 rounded-2xl flex items-center justify-center">
-                    <i class="fa-solid fa-chart-line text-purple-600"></i>
+            <div class="bento-card col-span-2 h-24 flex items-center gap-4 bg-blue-600/10 border-blue-600/20">
+                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-bullhorn text-white"></i>
                 </div>
                 <div>
-                    <h3 class="text-3xl font-black mb-4">ANALITIKË LIVE</h3>
-                    <p class="text-zinc-500">Zbuloni cilat pjata janë trendi dhe optimizoni stokun tuaj në kohë reale.</p>
+                    <h4 class="font-black text-sm uppercase">Marketing Hub</h4>
+                    <p class="text-[10px] text-zinc-500">Dërgo oferta në WhatsApp</p>
                 </div>
+                <i class="fa-solid fa-chevron-right ml-auto text-zinc-700"></i>
             </div>
         </section>
-
-        <section class="mb-40 text-center">
-            <div class="max-w-4xl mx-auto py-24 px-10 border border-white/5 rounded-[80px] bg-gradient-to-b from-white/5 to-transparent">
-                <h2 class="text-6xl md:text-8xl font-black mb-12 tracking-tighter uppercase">Krijo Magjinë <br> <span class="serif italic text-orange-600">tënde.</span></h2>
-                <p class="text-zinc-500 mb-12 text-lg">Hapni laboratorin e ofertave dhe ndërtoni strategjinë tuaj të shitjeve për një vit rresht.</p>
-                
-                <button onclick="toggleModal(true)" class="glow-trigger group">
-                    HAP LABORATORIN
-                    <i class="fa-solid fa-wand-magic-sparkles ml-3 group-hover:rotate-12 transition-transform"></i>
-                </button>
-            </div>
-        </section>
-
     </main>
 
-    <div id="offer-modal" class="modal-os">
-        <div class="flex flex-col h-full p-10 md:p-20">
-            <div class="flex justify-between items-center mb-20">
-                <span class="text-xs font-black tracking-[10px] text-zinc-500">OFFER ENGINE v3.0</span>
-                <button onclick="toggleModal(false)" class="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 flex-1">
-                <div class="card-pro p-10 hover:bg-orange-600 group cursor-pointer">
-                    <h4 class="text-sm font-black mb-4 group-hover:text-black">DITORE</h4>
-                    <span class="text-6xl font-black group-hover:text-black">24H</span>
-                </div>
-                <div class="card-pro p-10 hover:bg-white group cursor-pointer">
-                    <h4 class="text-sm font-black mb-4 group-hover:text-black">JAVORE</h4>
-                    <span class="text-6xl font-black group-hover:text-black">07D</span>
-                </div>
-                <div class="card-pro p-10 hover:bg-white group cursor-pointer">
-                    <h4 class="text-sm font-black mb-4 group-hover:text-black">MUJORE</h4>
-                    <span class="text-6xl font-black group-hover:text-black">30D</span>
-                </div>
-                <div class="card-pro p-10 border-orange-600 bg-orange-600/10 hover:bg-orange-600 group cursor-pointer">
-                    <h4 class="text-sm font-black mb-4 group-hover:text-black uppercase">Vjetore</h4>
-                    <span class="text-6xl font-black group-hover:text-black">365D</span>
-                </div>
-            </div>
-            <div class="mt-10">
-                <p class="text-zinc-500 text-center text-xs tracking-widest uppercase">Zgjidhni kohëzgjatjen për të hapur parametrat e ofertës</p>
-            </div>
-        </div>
-    </div>
+    <nav class="app-nav">
+        <a href="#" class="relative flex flex-col items-center text-orange-600">
+            <i class="fa-solid fa-house-chimney text-xl"></i>
+            <div class="active-dot"></div>
+        </a>
+        <a href="builder.html" class="flex flex-col items-center text-zinc-500">
+            <i class="fa-solid fa-plus-square text-xl"></i>
+        </a>
+        <a href="qr-code.html" class="flex flex-col items-center text-zinc-500">
+            <i class="fa-solid fa-qrcode text-xl"></i>
+        </a>
+        <a href="analytics.html" class="flex flex-col items-center text-zinc-500">
+            <i class="fa-solid fa-chart-line text-xl"></i>
+        </a>
+    </nav>
 
     <script>
-        // Custom Cursor Movement
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-
-        // Intro Sequence
-        const tl = gsap.timeline();
-        tl.to(".intro-txt", { opacity: 1, y: -20, duration: 1, ease: "expo.out" })
-          .to(".intro-sub", { opacity: 1, duration: 1 }, "-=0.5")
-          .to("#intro", { y: "-100%", duration: 1.5, ease: "expo.inOut", delay: 1 })
-          .from("main", { opacity: 0, duration: 1 })
-          .set("body", { overflow: "auto" });
-
-        // Sidebar Toggle
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
+        // 1. REGISTER SERVICE WORKER (Bën App-in real)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
         }
 
-        // Modal OS Logic
-        function toggleModal(show) {
-            const modal = document.getElementById('offer-modal');
-            if(show) {
-                modal.style.display = 'block';
-                gsap.to(modal, { opacity: 1, duration: 0.8, ease: "power4.out" });
-                gsap.from(".modal-os .card-pro", { y: 100, opacity: 0, stagger: 0.1, duration: 0.8 });
-            } else {
-                gsap.to(modal, { opacity: 0, duration: 0.5, onComplete: () => modal.style.display = 'none' });
+        // 2. DYNAMIC PARTICLES BACKGROUND
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if(this.x > canvas.width) this.x = 0;
+                if(this.y > canvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 92, 0, 0.3)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
-        // Language Switcher Logic
-        function setLang(lang) {
-            // Logjika e ndërrimit të gjuhës
-            console.log("Gjuha u ndërrua në: " + lang);
+        function createParticles() {
+            for(let i=0; i<50; i++) particles.push(new Particle());
         }
 
-        // 3D Parallax for cards
-        document.querySelectorAll('.card-pro').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) / rect.width - 0.5;
-                const y = (e.clientY - rect.top) / rect.height - 0.5;
-                gsap.to(card, { rotationY: x * 10, rotationX: -y * 10, duration: 0.4 });
-            });
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, { rotationY: 0, rotationX: 0, duration: 0.4 });
-            });
-        });
+        function animate() {
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas(); createParticles(); animate();
+
+        // 3. LIVE COUNTER ANIMATION
+        let count = 482;
+        setInterval(() => {
+            count += Math.floor(Math.random() * 3);
+            document.getElementById('live-counter').innerText = count;
+        }, 3000);
+
+        // GSAP ENTRANCE
+        gsap.from(".bento-card", { y: 30, opacity: 0, stagger: 0.1, duration: 1, ease: "expo.out" });
     </script>
 </body>
 </html>
