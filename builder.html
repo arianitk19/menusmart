@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenuSmart | The Infinite Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;800&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --p: #FF5C00; --bg: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
+        
+        /* Master Layout */
+        .studio-container { display: grid; grid-template-columns: 420px 1fr; height: 100vh; }
+
+        /* Left Panel - Control Center */
+        .control-center { background: #0c0c0c; border-right: 1px solid rgba(255,255,255,0.05); overflow-y: auto; padding: 30px; }
+        
+        /* Right Panel - Virtual Workspace */
+        .workspace { background: #000; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+
+        /* Device Templates */
+        .canvas { background: #fff; color: #000; transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); position: relative; overflow-y: auto; }
+        .view-mobile { width: 340px; height: 680px; border-radius: 40px; box-shadow: 0 0 0 10px #1a1a1a, 0 40px 100px rgba(0,0,0,0.8); }
+        .view-desktop { width: 90%; height: 85%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .view-print { width: 595px; height: 842px; border-radius: 0; box-shadow: 0 0 80px rgba(255,255,255,0.05); }
+
+        /* Inputs & UI */
+        .ui-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .ui-input { width: 100%; background: #000; border: 1px solid #222; padding: 12px; border-radius: 12px; font-size: 13px; color: #fff; transition: 0.3s; }
+        .ui-input:focus { border-color: var(--p); outline: none; }
+
+        /* View Switcher Buttons */
+        .view-btn { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #1a1a1a; color: #555; transition: 0.4s; }
+        .view-btn.active { background: var(--p); color: #fff; box-shadow: 0 0 20px rgba(255, 92, 0, 0.4); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="studio-container">
+        
+        <aside class="control-center no-scrollbar">
+            <header class="mb-10 flex justify-between items-center">
+                <h1 class="text-xl font-black tracking-tighter uppercase">Menu<span class="text-orange-600">Smart</span> Studio</h1>
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+            </header>
+
+            <div class="ui-card">
+                <p class="text-[10px] font-black tracking-[4px] text-zinc-500 uppercase mb-4">01. Identiteti</p>
+                <input type="text" id="biz-name" oninput="sync()" placeholder="Emri i Biznesit" class="ui-input mb-4">
+                <button onclick="document.getElementById('logo-up').click()" class="w-full py-3 bg-zinc-900 border border-white/5 rounded-xl text-[10px] font-bold hover:bg-zinc-800 transition">NGARKO LOGON</button>
+                <input type="file" id="logo-up" class="hidden" onchange="loadLogo(event)">
+            </div>
+
+            <div class="ui-card">
+                <p class="text-[10px] font-black tracking-[4px] text-zinc-500 uppercase mb-4">02. Dizajni & Rubrikat</p>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="bg-black/40 p-3 rounded-xl">
+                        <span class="text-[8px] block mb-2 opacity-50 uppercase">Sfondi</span>
+                        <input type="color" id="color-bg" value="#ffffff" oninput="sync()" class="w-full h-6 bg-transparent">
+                    </div>
+                    <div class="bg-black/40 p-3 rounded-xl">
+                        <span class="text-[8px] block mb-2 opacity-50 uppercase">Teksti</span>
+                        <input type="color" id="color-txt" value="#000000" oninput="sync()" class="w-full h-6 bg-transparent">
+                    </div>
+                </div>
+                <label class="text-[9px] text-zinc-600 block mb-2">STILI I MONEDHËS</label>
+                <select id="currency-style" onchange="sync()" class="ui-input mb-4">
+                    <option value="€">Euro (€)</option>
+                    <option value="$">Dollar ($)</option>
+                    <option value="Lek">Lek</option>
+                </select>
+                <label class="text-[9px] text-zinc-600 block mb-2">MADHËSIA E TEKSTIT</label>
+                <input type="range" id="font-size" min="12" max="24" value="16" oninput="sync()" class="w-full accent-orange-600">
+            </div>
+
+            <div class="ui-card">
+                <p class="text-[10px] font-black tracking-[4px] text-zinc-500 uppercase mb-4">03. Menu Engine</p>
+                <input type="text" id="cat-input" placeholder="Emri i Kategorisë (Psh: Grill)" class="ui-input mb-3">
+                <button onclick="addCategory()" class="w-full py-3 bg-white text-black font-black text-[10px] rounded-xl mb-6 hover:bg-orange-600 hover:text-white transition">KRIJO KATEGORI</button>
+                
+                <div id="item-fields" class="hidden space-y-3 pt-4 border-t border-white/5">
+                    <select id="cat-selector" class="ui-input"></select>
+                    <input type="text" id="item-name" placeholder="Emri i produktit" class="ui-input">
+                    <input type="text" id="item-price" placeholder="Çmimi" class="ui-input">
+                    <textarea id="item-desc" placeholder="Përshkrimi..." class="ui-input h-20"></textarea>
+                    <button onclick="addItem()" class="w-full py-4 bg-orange-600 font-black text-xs rounded-xl">SHTO ARTIKULLIN</button>
+                </div>
+            </div>
+
+            <button class="w-full py-5 bg-blue-600 rounded-2xl font-black text-[10px] tracking-widest uppercase mb-10">Ruaj & Publiko</button>
+        </aside>
+
+        <main class="workspace">
+            
+            <div class="absolute top-10 left-1/2 -translate-x-1/2 flex gap-4 bg-zinc-900/80 p-2 rounded-2xl border border-white/10 backdrop-blur-xl z-50">
+                <button onclick="changeView('mobile')" id="btn-mobile" class="view-btn active" title="Mobile View">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                </button>
+                <button onclick="changeView('desktop')" id="btn-desktop" class="view-btn" title="Desktop View">
+                    <i class="fa-solid fa-desktop"></i>
+                </button>
+                <button onclick="changeView('print')" id="btn-print" class="view-btn" title="Print (A4)">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+            </div>
+
+            <div id="canvas" class="canvas view-mobile no-scrollbar">
+                <div class="p-10 text-center">
+                    <div id="logo-preview" class="w-20 h-20 mx-auto mb-6 hidden">
+                        <img id="p-logo-img" src="" class="w-full h-full object-contain">
+                    </div>
+                    <h2 id="p-biz-name" class="text-2xl font-black uppercase tracking-tighter">Business Name</h2>
+                    <div class="w-12 h-1 bg-current mx-auto mt-4 opacity-10"></div>
+                </div>
+
+                <div id="p-menu" class="px-8 pb-20 space-y-12">
+                    <div class="text-center py-20 opacity-20 border-2 border-dashed border-black/10 rounded-3xl mx-4">
+                        <i class="fa-solid fa-wand-magic-sparkles text-3xl mb-4"></i>
+                        <p class="text-[10px] font-bold uppercase tracking-widest">Krijimi Live...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-10 left-10 text-[10px] font-black text-zinc-800 tracking-[5px]">MASTER BUILDER v2.0</div>
+        </main>
+    </div>
+
+    <script>
+        let menuData = [];
+
+        function sync() {
+            const bizName = document.getElementById('biz-name').value;
+            const bgColor = document.getElementById('color-bg').value;
+            const txtColor = document.getElementById('color-txt').value;
+            const fontSize = document.getElementById('font-size').value;
+
+            document.getElementById('p-biz-name').innerText = bizName || "Business Name";
+            const canvas = document.getElementById('canvas');
+            canvas.style.backgroundColor = bgColor;
+            canvas.style.color = txtColor;
+            canvas.style.fontSize = fontSize + "px";
+        }
+
+        function changeView(type) {
+            const canvas = document.getElementById('canvas');
+            canvas.className = `canvas no-scrollbar view-${type}`;
+            
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${type}`).classList.add('active');
+
+            gsap.from(canvas, { scale: 0.9, opacity: 0.5, duration: 0.6, ease: "expo.out" });
+        }
+
+        function loadLogo(e) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const img = document.getElementById('p-logo-img');
+                img.src = reader.result;
+                document.getElementById('logo-preview').classList.remove('hidden');
+                gsap.from("#logo-preview", { scale: 0, duration: 0.5, ease: "back.out" });
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+        function addCategory() {
+            const cat = document.getElementById('cat-input').value;
+            if(!cat) return;
+            menuData.push({ name: cat, items: [] });
+            document.getElementById('cat-input').value = '';
+            document.getElementById('item-fields').classList.remove('hidden');
+            updateSelectors();
+            render();
+        }
+
+        function updateSelectors() {
+            const sel = document.getElementById('cat-selector');
+            sel.innerHTML = menuData.map((c, i) => `<option value="${i}">${c.name}</option>`).join('');
+        }
+
+        function addItem() {
+            const idx = document.getElementById('cat-selector').value;
+            const name = document.getElementById('item-name').value;
+            const price = document.getElementById('item-price').value;
+            const desc = document.getElementById('item-desc').value;
+            const cur = document.getElementById('currency-style').value;
+
+            if(!name) return;
+            menuData[idx].items.push({ name, price, desc, cur });
+            
+            document.getElementById('item-name').value = '';
+            document.getElementById('item-price').value = '';
+            document.getElementById('item-desc').value = '';
+            render();
+        }
+
+        function render() {
+            const cont = document.getElementById('p-menu');
+            cont.innerHTML = menuData.map(cat => `
+                <div>
+                    <h3 class="font-black border-b-2 border-current inline-block mb-6 uppercase tracking-tight text-lg">${cat.name}</h3>
+                    <div class="space-y-8">
+                        ${cat.items.map(it => `
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1 pr-6">
+                                    <h4 class="font-bold text-sm uppercase">${it.name}</h4>
+                                    <p class="text-[11px] opacity-60 leading-relaxed font-medium">${it.desc}</p>
+                                </div>
+                                <span class="font-black text-sm whitespace-nowrap">${it.price}${it.cur}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            gsap.from("#p-menu > div:last-child", { opacity: 0, x: 20, duration: 0.4 });
+        }
+
+        // Intro animation
+        window.onload = () => {
+            gsap.from(".control-center", { x: -400, duration: 1, ease: "power4.out" });
+            gsap.from(".workspace", { opacity: 0, duration: 1.5 });
+        };
+
+
+function saveToLocal() {
+    const data = {
+        bizName: document.getElementById('biz-name').value,
+        brandColor: document.getElementById('color-p')?.value || '#FF5C00', // ngjyra kryesore
+        logo: document.getElementById('p-logo-img')?.src || ''
+    };
+    localStorage.setItem('menuSmart_Data', JSON.stringify(data));
+}
+
+// Thirre këtë funksion brenda funksionit tënd sync()
+function sync() {
+    // ... kodi yt ekzistues i sync ...
+    saveToLocal(); // Ruaj progresin
+}
+
+
+    </script>
+</body>
+</html>
