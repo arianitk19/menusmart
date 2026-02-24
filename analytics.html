@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | MenuSmart PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --p: #FF5C00; --bg: #000; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
+        .glass-card { background: rgba(20,20,20,0.6); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 30px; padding: 25px; }
+        .stat-value { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="p-6 pb-32 no-scrollbar">
+
+    <header class="flex justify-between items-center mb-10">
+        <div>
+            <h1 class="text-2xl font-black italic uppercase tracking-tighter">Analitika <span class="text-orange-600">Live</span></h1>
+            <p class="text-[10px] text-zinc-500 font-bold tracking-[3px] uppercase">Performanca në kohë reale</p>
+        </div>
+        <a href="index.html" class="w-12 h-12 bg-zinc-900 rounded-2xl flex items-center justify-center border border-white/5 text-zinc-400">
+            <i class="fa-solid fa-xmark"></i>
+        </a>
+    </header>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="glass-card flex flex-col justify-between h-40 border-l-4 border-orange-600">
+            <i class="fa-solid fa-eye text-orange-600 text-xl"></i>
+            <div>
+                <h3 id="total-scans" class="text-4xl stat-value tabular-nums">0</h3>
+                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Skanime Totale</p>
+            </div>
+        </div>
+        <div class="glass-card flex flex-col justify-between h-40 border-l-4 border-green-500">
+            <i class="fa-solid fa-utensils text-green-500 text-xl"></i>
+            <div>
+                <h3 id="total-items-stat" class="text-4xl stat-value tabular-nums">0</h3>
+                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Artikuj Menu</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card mb-6">
+        <div class="flex justify-between items-center mb-8">
+            <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-400">Aktiviteti i Klientëve</h4>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-orange-600 rounded-full animate-ping"></span>
+                <span class="text-[9px] font-bold text-orange-600 uppercase">Live</span>
+            </div>
+        </div>
+        <div class="h-64">
+            <canvas id="liveChart"></canvas>
+        </div>
+    </div>
+
+    <div class="glass-card bg-zinc-900/30">
+        <h4 class="text-[10px] font-black uppercase tracking-[3px] text-zinc-500 mb-6">Pikat e nxehta (Peak Hours)</h4>
+        <div class="space-y-4">
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-zinc-400">Drekë (12:00 - 15:00)</span>
+                <span class="font-bold text-orange-500">45% e vizitave</span>
+            </div>
+            <div class="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="w-[45%] h-full bg-orange-600"></div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md h-20 bg-zinc-900/90 backdrop-blur-xl rounded-3xl border border-white/10 flex justify-around items-center px-6 z-50">
+        <a href="index.html" class="text-zinc-500"><i class="fa-solid fa-house text-xl"></i></a>
+        <a href="builder.html" class="text-zinc-500"><i class="fa-solid fa-plus-square text-xl"></i></a>
+        <a href="qr-code.html" class="text-zinc-500"><i class="fa-solid fa-qrcode text-xl"></i></a>
+        <a href="analytics.html" class="text-orange-600"><i class="fa-solid fa-chart-pie text-xl"></i></a>
+    </nav>
+
+    <script src="core-app.js"></script>
+    <script>
+        let myChart;
+
+        function initChart() {
+            const ctx = document.getElementById('liveChart').getContext('2d');
+            const data = MenuSmart.get();
+            
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
+                    datasets: [{
+                        label: 'Skanime',
+                        data: [5, 12, 45, 38, 20, 65, 89, 34],
+                        borderColor: data.mainColor || '#FF5C00',
+                        backgroundColor: 'rgba(255, 92, 0, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: data.mainColor || '#FF5C00',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false, beginAtZero: true },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#555', font: { size: 10, weight: 'bold' } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function refreshData() {
+            const data = MenuSmart.get();
+            
+            // Përditëso numrin e skanimeve nga memoria globale
+            document.getElementById('total-scans').innerText = data.stats ? data.stats.scans : 482;
+            
+            // Kalkulo artikujt totalë nga menuja reale
+            let totalItems = 0;
+            if (data.menu) data.menu.forEach(cat => totalItems += cat.items.length);
+            document.getElementById('total-items-stat').innerText = totalItems;
+
+            // Përditëso ngjyrën e grafikut nëse ka ndryshuar te Builderi
+            myChart.data.datasets[0].borderColor = data.mainColor || '#FF5C00';
+            myChart.update();
+        }
+
+        window.onload = () => {
+            initChart();
+            refreshData();
+            
+            // Simulo përditësimin "Real-Time" çdo 5 sekonda
+            setInterval(refreshData, 5000);
+
+            // GSAP Entrance
+            gsap.from(".glass-card", { y: 20, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power2.out" });
+        };
+    </script>
+</body>
+</html>
