@@ -2,96 +2,137 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Forge | MenuSmart PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MenuSmart Forge | High-Res QR Engine</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --p: #FF5C00; --bg: #050505; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
+        :root { --p: #FF5C00; --bg: #080808; --card: rgba(18, 18, 18, 0.6); }
         
-        /* Identike me Studio (Builder) */
-        .studio-container { display: grid; grid-template-columns: 380px 1fr; height: 100vh; }
-        .control-center { background: #0c0c0c; border-right: 1px solid rgba(255,255,255,0.05); overflow-y: auto; padding: 25px; }
-        .workspace { background: radial-gradient(circle at center, #111 0%, #000 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); color: #fff; 
+            overflow: hidden; height: 100vh;
+        }
 
-        /* QR Card Glassmorphism */
+        .studio-container { display: grid; grid-template-columns: 400px 1fr; height: 100vh; }
+
+        /* Control Center Consistency */
+        .control-center { 
+            background: #0c0c0c; border-right: 1px solid rgba(255,255,255,0.03); 
+            overflow-y: auto; padding: 40px 30px; z-index: 10;
+        }
+
+        /* Workspace & Ambient Glow */
+        .workspace { background: #000; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .ambient-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 70%; height: 70%;
+            background: radial-gradient(circle, rgba(255, 92, 0, 0.04) 0%, transparent 70%);
+            z-index: 0; pointer-events: none;
+        }
+
+        /* High-End QR Card */
         .qr-card {
             background: #fff; padding: 45px; border-radius: 50px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.9);
             position: relative; transition: transform 0.1s ease-out;
-            transform-style: preserve-3d;
+            transform-style: preserve-3d; z-index: 1;
         }
 
         .qr-logo-overlay {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 60px; height: 60px; background: white; border-radius: 15px;
-            padding: 5px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 2px solid #f0f0f0;
+            width: 65px; height: 65px; background: white; border-radius: 18px;
+            padding: 6px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #f0f0f0;
         }
 
-        /* UI Elements nga Builderi */
-        .ui-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
-        .ui-input { width: 100%; background: #000; border: 1px solid #222; padding: 12px; border-radius: 12px; font-size: 13px; color: #fff; transition: 0.3s; }
+        /* UI Elements Consistency */
+        .ui-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #444; margin-bottom: 12px; display: block; }
+        .ui-card { background: var(--card); border: 1px solid rgba(255,255,255,0.03); border-radius: 30px; padding: 25px; margin-bottom: 24px; }
+        
+        .ui-input { 
+            width: 100%; background: #000; border: 1px solid #1a1a1a; 
+            padding: 16px; border-radius: 16px; font-size: 13px; color: #fff;
+            transition: all 0.3s;
+        }
         .ui-input:focus { border-color: var(--p); outline: none; }
-        
-        .btn-main { background: var(--p); color: #fff; font-weight: 800; width: 100%; padding: 18px; border-radius: 15px; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; transition: 0.4s; }
-        .btn-main:hover { filter: brightness(1.2); transform: translateY(-2px); }
-        
-        .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        .sync-indicator { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 10px #22c55e; }
+        .btn-main { 
+            width: 100%; py: 18px; background: var(--p); color: #fff; 
+            border-radius: 18px; font-weight: 800; font-size: 11px; 
+            text-transform: uppercase; letter-spacing: 2px;
+            transition: all 0.3s; box-shadow: 0 10px 30px rgba(255, 92, 0, 0.2);
+        }
+        .btn-main:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        /* Nav Dock */
+        .nav-dock {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            padding: 8px 30px; background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(40px) saturate(150%); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 100px; display: flex; gap: 30px; align-items: center; z-index: 2000;
+        }
+        .nav-link { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: #555; transition: 0.3s; }
+        .nav-link.active { color: var(--p); }
+
+        .sync-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 4px 12px; background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.1); border-radius: 100px;
+            font-size: 9px; font-weight: 800; color: #22c55e; text-transform: uppercase;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
     <div class="studio-container">
         <aside class="control-center no-scrollbar">
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-2">
-                    <div class="sync-indicator"></div>
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">QR Sync Active</span>
-                </div>
-                <a href="index.html" class="text-zinc-500 hover:text-white transition"><i class="fa-solid fa-house-user"></i></a>
-            </div>
+            <header class="flex items-center justify-between mb-12">
+                <div class="sync-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> QR Sync Active</div>
+                <a href="index.html" class="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 border border-white/5 text-zinc-500 hover:text-white transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+            </header>
 
-            <div class="ui-card border-l-4 border-orange-600">
-                <p class="text-[10px] font-black tracking-[3px] text-zinc-500 uppercase mb-4">Lidhja e Menusë</p>
+            <h2 class="text-xs font-black uppercase tracking-[4px] text-zinc-600 mb-8">Forge Engine</h2>
+
+            <div class="ui-card border-l-2 border-orange-600">
+                <span class="ui-label" style="color: var(--p)">Lidhja e Menusë</span>
                 <input type="text" id="qr-url" oninput="updateQR()" placeholder="menusmart.io/lokali-juaj" class="ui-input mb-3">
-                <p class="text-[9px] text-zinc-600 italic leading-relaxed">Ky kod do të hapë menunë tuaj dixhitale në çdo smartphone.</p>
+                <p class="text-[9px] text-zinc-600 italic leading-relaxed">Ky URL do të hapë eksperiencën tuaj 10/10.</p>
             </div>
 
             <div class="ui-card">
-                <p class="text-[10px] font-black tracking-[3px] text-zinc-500 uppercase mb-4">Dizajni i Kodit</p>
-                <div class="space-y-5">
-                    <div class="bg-black p-3 rounded-xl border border-white/5">
-                        <span class="text-[8px] block mb-2 opacity-50 uppercase tracking-widest text-zinc-400">Ngjyra e Pixel-ave</span>
-                        <input type="color" id="qr-color" value="#000000" oninput="updateQR()" class="w-full h-8 bg-transparent cursor-pointer">
+                <span class="ui-label">Dizajni i Kodit</span>
+                <div class="space-y-6">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                        <span class="text-[8px] font-bold block mb-3 opacity-30 uppercase tracking-widest">Ngjyra e Pixelave</span>
+                        <input type="color" id="qr-color" value="#000000" oninput="updateQR()" class="w-full h-10 bg-transparent cursor-pointer rounded-lg overflow-hidden">
                     </div>
-                    <button onclick="document.getElementById('qr-logo-up').click()" class="w-full py-3 bg-zinc-900 border border-white/5 rounded-xl text-[10px] font-bold hover:bg-zinc-800 transition uppercase tracking-tighter">Ndrysho Logon Qendrore</button>
+                    <button onclick="document.getElementById('qr-logo-up').click()" class="w-full py-4 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition">Ndrysho Logon Qendrore</button>
                     <input type="file" id="qr-logo-up" class="hidden" onchange="loadQRLogo(event)">
                 </div>
             </div>
 
-            <div class="ui-card bg-orange-600/5 border-orange-600/20">
-                <p class="text-[10px] font-black tracking-[3px] text-orange-600 uppercase mb-4">Gati për Printim</p>
-                <button onclick="downloadQR()" class="btn-main shadow-2xl shadow-orange-600/20">Shkarko PNG High-Res</button>
-            </div>
-
-            <div class="mt-auto pt-6 text-center">
-                <a href="builder.html" class="text-zinc-600 hover:text-white text-[10px] font-bold tracking-[2px] uppercase transition">
-                    <i class="fa-solid fa-chevron-left mr-2 text-[8px]"></i> Kthehu te Studio
-                </a>
+            <div class="ui-card bg-orange-600/5 border-orange-600/10">
+                <span class="ui-label">Finalizimi</span>
+                <button onclick="downloadQR()" class="btn-main py-4">Shkarko PNG High-Res</button>
             </div>
         </aside>
 
         <main class="workspace" id="parallax-container">
-            <div class="text-center relative">
+            <div class="ambient-glow"></div>
+            
+            <div class="text-center relative z-10">
                 <div id="export-target" class="qr-card">
                     <div id="qrcode"></div>
                     <div id="qr-logo-container" class="qr-logo-overlay">
@@ -99,38 +140,44 @@
                     </div>
                 </div>
                 
-                <div class="mt-12">
-                    <h2 id="qr-biz-label" class="text-3xl font-black uppercase tracking-tighter italic scale-up">Business Name</h2>
-                    <div class="flex items-center justify-center gap-4 mt-3 opacity-40">
+                <div class="mt-16">
+                    <h2 id="qr-biz-label" class="text-4xl font-black uppercase tracking-tighter italic">Business Name</h2>
+                    <div class="flex items-center justify-center gap-6 mt-4 opacity-30">
                         <div class="h-[1px] w-12 bg-white"></div>
-                        <p class="text-[10px] font-bold tracking-[8px] uppercase">Scan & Order</p>
+                        <p class="text-[10px] font-black tracking-[10px] uppercase">Scan & Order</p>
                         <div class="h-[1px] w-12 bg-white"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="absolute bottom-8 right-8 text-[9px] font-bold text-zinc-700 tracking-[4px] uppercase">
-                QR Engine v2.0 // Real-time Graphics
+            <div class="absolute bottom-10 flex justify-between w-full px-12 opacity-20">
+                <span class="text-[9px] font-black tracking-[5px] uppercase italic">QR Engine v2.0</span>
             </div>
         </main>
     </div>
 
-    <script src="core-app.js"></script>
+    <nav class="nav-dock">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="builder.html" class="nav-link">Studio</a>
+        <a href="qr-code.html" class="nav-link active">Forge</a>
+        <a href="analytics.html" class="nav-link">Data</a>
+        <div class="w-[1px] h-4 bg-zinc-800 mx-2"></div>
+        <button class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-[10px] text-white">
+            <i class="fa-solid fa-user"></i>
+        </button>
+    </nav>
+
     <script>
         let qrCode;
 
         function loadSyncedData() {
-            // Përdorim të dhënat globale nga core-app.js ose MasterData
-            const raw = localStorage.getItem('MenuSmart_Global_State') || localStorage.getItem('menuSmart_MasterData');
+            const raw = localStorage.getItem('menuSmart_MasterData');
             if(raw) {
                 const data = JSON.parse(raw);
-                document.getElementById('qr-biz-label').innerText = data.name || data.bizName || "Business Name";
-                
-                // Sinkronizojmë ngjyrën kryesore nga Builderi në CSS variablën --p
+                document.getElementById('qr-biz-label').innerText = data.name || "Business Name";
                 if(data.mainColor) {
                     document.documentElement.style.setProperty('--p', data.mainColor);
                 }
-                
                 if(data.logo && data.logo !== "") {
                     document.getElementById('qr-inner-logo').src = data.logo;
                 }
@@ -138,14 +185,14 @@
         }
 
         function updateQR() {
-            const url = document.getElementById('qr-url').value || "https://menusmart.io/live";
+            const url = document.getElementById('qr-url').value || "https://menusmart.io/demo";
             const color = document.getElementById('qr-color').value;
             
             document.getElementById('qrcode').innerHTML = "";
             qrCode = new QRCode(document.getElementById("qrcode"), {
                 text: url,
-                width: 280,
-                height: 280,
+                width: 300,
+                height: 300,
                 colorDark : color,
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.H
@@ -162,11 +209,8 @@
 
         async function downloadQR() {
             const stage = document.getElementById('export-target');
-            // Export me rezolucion 4x për printim profesional
             const canvas = await html2canvas(stage, { 
-                backgroundColor: null, 
-                scale: 4, 
-                useCORS: true 
+                backgroundColor: null, scale: 4, useCORS: true 
             });
             const link = document.createElement('a');
             link.download = `MenuSmart-QR-${Date.now()}.png`;
@@ -174,7 +218,7 @@
             link.click();
         }
 
-        // Parallax Effect për Workspace (Identik me ndjesinë e Builder-it)
+        // Parallax Effect
         document.getElementById('parallax-container').addEventListener('mousemove', (e) => {
             const card = document.querySelector('.qr-card');
             const x = (window.innerWidth / 2 - e.pageX) / 50;
@@ -185,10 +229,9 @@
         window.onload = () => {
             loadSyncedData();
             updateQR();
-            
-            // Animacionet hyrëse GSAP (Konsistenca vizuale)
-            gsap.from(".qr-card", { scale: 0.7, opacity: 0, duration: 1.2, ease: "expo.out" });
-            gsap.from(".control-center", { x: -80, opacity: 0, duration: 0.8, ease: "power2.out" });
+            gsap.from(".qr-card", { scale: 0.8, opacity: 0, duration: 1.2, ease: "expo.out" });
+            gsap.from(".control-center", { x: -80, opacity: 0, duration: 1, ease: "expo.out" });
+            gsap.from(".nav-dock", { y: 100, opacity: 0, duration: 1, delay: 0.5, ease: "expo.out" });
         };
     </script>
 </body>
