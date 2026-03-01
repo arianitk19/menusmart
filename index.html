@@ -3,158 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MenuSmart PRO | OS</title>
+    <title>MenuSmart PRO | OS v2.0</title>
+    
     <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
 
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MenuSmart">
-
-<link rel="apple-touch-icon" href="icon-512.png">
-
-<meta name="theme-color" content="#000000">
-    
     <style>
-        :root { --p: #FF5C00; --bg: #000; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
+        :root { --p: #FF5C00; --bg: #000; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); }
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* Canvas Background for Dynamic Particles */
-        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.6; }
+        /* Smooth Background Gradient */
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% -20%, #331500 0%, #000 60%);
+            z-index: -2;
+        }
 
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; pointer-events: none; }
+
+        /* Bento Grid Architecture */
         .bento-card {
-            background: rgba(20, 20, 20, 0.7);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(25px);
-            border-radius: 30px;
-            padding: 20px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(30px);
+            border-radius: 32px;
+            padding: 24px;
             position: relative;
             overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* Glassmorphism Navigation */
+        .bento-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: 0.5s;
+        }
+
+        .bento-card:hover::before { left: 100%; }
+        .bento-card:active { transform: scale(0.96) translateY(4px); background: rgba(255,255,255,0.06); }
+
+        /* High-End Navigation */
         .app-nav {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 450px; height: 75px;
-            background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 28px;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 85%; max-width: 400px; height: 80px;
+            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(40px);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 40px;
             display: flex; justify-content: space-around; align-items: center;
-            z-index: 1000;
+            z-index: 1000; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
 
-        .active-dot { position: absolute; bottom: -8px; width: 4px; height: 4px; background: var(--p); border-radius: 50%; }
-        
-        /* Smooth Scrolling */
+        .nav-link { color: #555; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .nav-link.active { color: var(--p); transform: translateY(-5px); }
+        .nav-indicator { position: absolute; top: -15px; width: 20px; height: 2px; background: var(--p); border-radius: 2px; opacity: 0; transition: 0.4s; }
+        .nav-link.active .nav-indicator { opacity: 1; box-shadow: 0 0 15px var(--p); }
+
+        /* Pulse Animation for Live Status */
+        .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; position: relative; }
+        .status-dot::after {
+            content: ''; position: absolute; inset: 0; background: inherit;
+            border-radius: inherit; animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(3); opacity: 0; } }
+
         .hide-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="hide-scroll">
 
+    <div class="bg-glow"></div>
     <canvas id="bg-canvas"></canvas>
 
-    <header class="p-6 flex justify-between items-center fixed top-0 w-full z-50 bg-black/20 backdrop-blur-md">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center font-black italic">M</div>
-            <h1 class="font-black text-lg tracking-tighter">MenuSmart <span class="text-orange-600">PRO</span></h1>
+    <header class="p-6 flex justify-between items-center fixed top-0 w-full z-50 bg-black/40 backdrop-blur-xl border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-orange-600 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-600/30">
+                <i class="fa-solid fa-layer-group text-white text-sm"></i>
+            </div>
+            <div>
+                <h1 class="font-black text-lg tracking-tighter leading-none">MenuSmart</h1>
+                <p class="text-[9px] font-bold text-orange-600 uppercase tracking-[2px]">Enterprise OS</p>
+            </div>
         </div>
-        <div class="flex gap-4">
-            <i class="fa-solid fa-bell text-zinc-500"></i>
-            <div class="w-6 h-6 rounded-full bg-zinc-800 border border-white/10"></div>
+        <div class="flex gap-3">
+            <button class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                <i class="fa-solid fa-magnifying-glass text-xs text-zinc-400"></i>
+            </button>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-zinc-800 to-zinc-700 border border-white/20 p-[2px]">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="rounded-full">
+            </div>
         </div>
     </header>
 
-    <main class="pt-28 px-5 pb-32 space-y-6">
+    <main class="pt-28 px-6 pb-36 space-y-6 max-w-lg mx-auto">
         
-        <section class="grid grid-cols-2 gap-4">
-            <div class="bento-card col-span-2 h-32 flex flex-row items-center justify-between bg-gradient-to-r from-orange-600/20 to-transparent">
+        <section class="bento-card min-h-[160px] bg-gradient-to-br from-orange-600/10 to-transparent flex flex-col justify-between">
+            <div class="flex justify-between items-start">
                 <div>
-                    <p class="text-[10px] font-bold text-orange-500 uppercase tracking-[3px]">Trafiku Live</p>
-                    <h2 class="text-4xl font-black tabular-nums" id="live-counter">482</h2>
-                    <p class="text-[10px] text-zinc-500">Skanime në 24 orët e fundit</p>
+                    <span class="flex items-center gap-2 text-[10px] font-black text-orange-500 uppercase tracking-[4px] mb-2">
+                        <span class="status-dot"></span> Real-time Traffic
+                    </span>
+                    <h2 class="text-5xl font-black tracking-tighter italic tabular-nums" id="live-counter">482</h2>
                 </div>
-                <div class="flex gap-1 items-end h-12">
-                    <div class="w-1 bg-orange-600 h-1/2 rounded-full animate-bounce"></div>
-                    <div class="w-1 bg-orange-600 h-full rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                    <div class="w-1 bg-orange-600 h-2/3 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-lg">+12% Today</span>
                 </div>
             </div>
-
-            <a href="builder.html" class="bento-card h-44 flex flex-col justify-between group active:scale-95 transition">
-                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-orange-600 transition">
-                    <i class="fa-solid fa-wand-magic-sparkles text-orange-600 group-hover:text-white"></i>
-                </div>
-                <div>
-                    <h3 class="font-black text-sm uppercase">Studio</h3>
-                    <p class="text-[10px] text-zinc-500">Edito Menunë</p>
-                </div>
-            </a>
-
-            <a href="qr-code.html" class="bento-card h-44 flex flex-col justify-between active:scale-95 transition">
-                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
-                    <i class="fa-solid fa-qrcode text-white"></i>
-                </div>
-                <div>
-                    <h3 class="font-black text-sm uppercase">QR Engine</h3>
-                    <p class="text-[10px] text-zinc-500">Printo Kodin</p>
-                </div>
-            </a>
-
-            <div class="bento-card col-span-2 bg-zinc-900/30">
-                <div class="flex justify-between items-center mb-4">
-                    <h4 class="text-xs font-black uppercase tracking-widest text-zinc-400">Inventory Alert</h4>
-                    <span class="text-[9px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full">3 Artikuj Low</span>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex justify-between text-xs">
-                        <span class="text-zinc-300">Filetë Viçi</span>
-                        <span class="font-bold text-red-500">2kg mbetur</span>
-                    </div>
-                    <div class="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
-                        <div class="w-1/5 h-full bg-red-500"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bento-card col-span-2 h-24 flex items-center gap-4 bg-blue-600/10 border-blue-600/20">
-                <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-bullhorn text-white"></i>
-                </div>
-                <div>
-                    <h4 class="font-black text-sm uppercase">Marketing Hub</h4>
-                    <p class="text-[10px] text-zinc-500">Dërgo oferta në WhatsApp</p>
-                </div>
-                <i class="fa-solid fa-chevron-right ml-auto text-zinc-700"></i>
+            <div class="flex gap-1 items-end h-16 w-full mt-4">
+                <canvas id="mini-graph" class="w-full h-full"></canvas>
             </div>
         </section>
+
+        <section class="grid grid-cols-2 gap-5">
+            <a href="builder.html" class="bento-card h-48 flex flex-col justify-between group">
+                <div class="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-600/20 group-hover:rotate-12 transition-transform duration-500">
+                    <i class="fa-solid fa-palette text-white text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-base uppercase italic tracking-tighter">Studio</h3>
+                    <p class="text-[11px] text-zinc-500 font-medium">Design & Layout</p>
+                </div>
+                <i class="fa-solid fa-arrow-right-long absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0"></i>
+            </a>
+
+            <a href="qr-code.html" class="bento-card h-48 flex flex-col justify-between group">
+                <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors duration-500">
+                    <i class="fa-solid fa-qrcode text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-base uppercase italic tracking-tighter">QR Engine</h3>
+                    <p class="text-[11px] text-zinc-500 font-medium">Smart Syncing</p>
+                </div>
+            </a>
+        </section>
+
+        <section class="bento-card">
+            <div class="flex justify-between items-center mb-6">
+                <h4 class="text-xs font-black uppercase tracking-[3px] text-zinc-400 italic">Inventory AI</h4>
+                <div class="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full">
+                    <span class="text-[9px] font-black text-red-500 uppercase tracking-widest">3 Items Critical</span>
+                </div>
+            </div>
+            <div class="space-y-5">
+                <div class="group">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="font-bold text-zinc-200">Wagyu Steak</span>
+                        <span class="font-black text-red-500 uppercase">12% Left</span>
+                    </div>
+                    <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
+                        <div class="h-full bg-gradient-to-r from-red-600 to-orange-500 rounded-full" style="width: 12%"></div>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="font-bold text-zinc-200">Salmon Fresh</span>
+                        <span class="font-black text-orange-500 uppercase">28% Left</span>
+                    </div>
+                    <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
+                        <div class="h-full bg-gradient-to-r from-orange-600 to-yellow-500 rounded-full" style="width: 28%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <nav class="app-nav">
-        <a href="#" class="relative flex flex-col items-center text-orange-600">
+        <a href="#" class="nav-link active">
+            <div class="nav-indicator"></div>
             <i class="fa-solid fa-house-chimney text-xl"></i>
-            <div class="active-dot"></div>
         </a>
-        <a href="builder.html" class="flex flex-col items-center text-zinc-500">
-            <i class="fa-solid fa-plus-square text-xl"></i>
+        <a href="builder.html" class="nav-link">
+            <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
         </a>
-        <a href="qr-code.html" class="flex flex-col items-center text-zinc-500">
-            <i class="fa-solid fa-qrcode text-xl"></i>
+        <a href="qr-code.html" class="nav-link">
+            <i class="fa-solid fa-expand text-xl"></i>
         </a>
-        <a href="analytics.html" class="flex flex-col items-center text-zinc-500">
-            <i class="fa-solid fa-chart-line text-xl"></i>
+        <a href="analytics.html" class="nav-link">
+            <i class="fa-solid fa-chart-pie text-xl"></i>
         </a>
     </nav>
 
+    <script src="core-app.js"></script>
     <script>
-        // 1. REGISTER SERVICE WORKER (Bën App-in real)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-
-        // 2. DYNAMIC PARTICLES BACKGROUND
+        // --- 1. CORE ENGINE: Particles Background ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -166,49 +203,89 @@
 
         class Particle {
             constructor() {
+                this.reset();
+            }
+            reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = Math.random() * 0.5 - 0.25;
-                this.speedY = Math.random() * 0.5 - 0.25;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.life = Math.random() * 0.5 + 0.5;
             }
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-                if(this.x > canvas.width) this.x = 0;
-                if(this.y > canvas.height) this.y = 0;
+                if(this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
             }
             draw() {
-                ctx.fillStyle = 'rgba(255, 92, 0, 0.3)';
+                ctx.fillStyle = `rgba(255, 92, 0, ${this.life * 0.3})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
-        function createParticles() {
-            for(let i=0; i<50; i++) particles.push(new Particle());
+        function setupParticles() {
+            for(let i=0; i<60; i++) particles.push(new Particle());
         }
 
-        function animate() {
+        function loop() {
             ctx.clearRect(0,0, canvas.width, canvas.height);
             particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
+            requestAnimationFrame(loop);
         }
 
-        window.addEventListener('resize', initCanvas);
-        initCanvas(); createParticles(); animate();
+        // --- 2. LIVE ANALYTICS: Mini Graph ---
+        function drawMiniGraph() {
+            const mCtx = document.getElementById('mini-graph').getContext('2d');
+            const parent = document.getElementById('mini-graph').parentElement;
+            document.getElementById('mini-graph').width = parent.clientWidth;
+            document.getElementById('mini-graph').height = parent.clientHeight;
 
-        // 3. LIVE COUNTER ANIMATION
-        let count = 482;
-        setInterval(() => {
-            count += Math.floor(Math.random() * 3);
-            document.getElementById('live-counter').innerText = count;
-        }, 3000);
+            mCtx.strokeStyle = '#FF5C00';
+            mCtx.lineWidth = 3;
+            mCtx.beginPath();
+            mCtx.moveTo(0, 50);
+            
+            for(let i=1; i<20; i++) {
+                mCtx.lineTo((parent.clientWidth/20) * i, Math.random() * 50);
+            }
+            mCtx.stroke();
+        }
 
-        // GSAP ENTRANCE
-        gsap.from(".bento-card", { y: 30, opacity: 0, stagger: 0.1, duration: 1, ease: "expo.out" });
+        // --- 3. INITIALIZATION & GSAP ---
+        window.onload = () => {
+            initCanvas();
+            setupParticles();
+            loop();
+            drawMiniGraph();
+
+            // Super entrance animation
+            const tl = gsap.timeline();
+            
+            tl.from("header", { y: -50, opacity: 0, duration: 1, ease: "expo.out" })
+              .from(".bento-card", { 
+                scale: 0.9, 
+                y: 40, 
+                opacity: 0, 
+                stagger: 0.15, 
+                duration: 1.2, 
+                ease: "expo.out" 
+              }, "-=0.6")
+              .from(".app-nav", { y: 100, opacity: 0, duration: 1, ease: "expo.out" }, "-=1");
+
+            // Live Counter Logic
+            let count = 482;
+            setInterval(() => {
+                count += Math.floor(Math.random() * 2);
+                document.getElementById('live-counter').innerText = count;
+                gsap.fromTo("#live-counter", { scale: 1.1 }, { scale: 1, duration: 0.4 });
+            }, 4000);
+        };
+
+        window.addEventListener('resize', () => { initCanvas(); drawMiniGraph(); });
+
     </script>
 </body>
 </html>
-
