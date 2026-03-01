@@ -3,12 +3,12 @@
   "name": "MenuSmart PRO Digital OS",
   "icons": [
     {
-  "src": "https://i.ibb.co/Lzd988N/bone-icon-192.png",
+  "src": "https://img.icons8.com/fluency/512/ff5c00/box.png",
   "type": "image/png",
   "sizes": "192x192"
 },
 {
-  "src": "https://i.ibb.co/0m0y3y0/bone-icon-512.png",
+  "src": "https://img.icons8.com/fluency/512/ff5c00/box.png",
   "type": "image/png",
   "sizes": "512x512",
   "purpose": "any maskable"
