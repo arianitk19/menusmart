@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MenuSmart TITAN | Gastronomy OS</title>
+    <title>MenuSmart PRO | Enterprise OS</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --p: #FF5C00; --bg: #030303; --accent: #1a1a1a; }
+        :root { --p: #FF5C00; --bg: #000; --card: rgba(10, 10, 10, 0.6); }
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -22,230 +23,195 @@
             color: #fff; 
             overflow: hidden; 
             height: 100vh;
-            -webkit-user-select: none;
+            perspective: 1000px;
         }
 
-        /* Fluid Background with Mesh Gradients */
-        .mesh-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: 
-                radial-gradient(at 0% 0%, rgba(255, 92, 0, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(255, 92, 0, 0.1) 0px, transparent 50%);
-            filter: blur(80px);
+        /* Abstract Dynamic Background */
+        .bg-orb {
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255, 92, 0, 0.15) 0%, transparent 70%);
+            border-radius: 50%; filter: blur(80px); z-index: -1;
         }
 
-        /* Glass Container for Navigation */
-        .titan-nav {
+        /* Glassmorphism Ultra-Refined */
+        .glass-panel {
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+        }
+
+        /* Hover & Interaction Effects */
+        .main-card {
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .main-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--p);
+        }
+
+        /* Typography Masterclass */
+        .title-gradient {
+            background: linear-gradient(180deg, #fff 0%, #666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Nav Dock like iPhone */
+        .dock {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 500px; height: 85px;
-            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 40px;
+            width: 90%; max-width: 400px; height: 85px;
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 42px;
             display: flex; justify-content: space-around; align-items: center;
-            z-index: 1000; box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            z-index: 100;
         }
 
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: #555; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .dock-item {
+            font-size: 1.5rem; color: #444; transition: 0.4s;
+            position: relative; width: 50px; height: 50px;
+            display: flex; items-center; justify-content: center;
         }
-        .nav-item.active { color: var(--p); transform: translateY(-12px); }
-        .nav-item i { font-size: 1.4rem; }
-        .nav-label { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Dynamic Cards */
-        .titan-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 35px;
-            padding: 24px;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
-        }
-        .titan-card:active { transform: scale(0.97); background: rgba(255, 255, 255, 0.05); }
-
-        /* QR Live Pulse */
-        #qr-mini-preview {
-            background: white; padding: 10px; border-radius: 18px;
-            box-shadow: 0 0 30px rgba(255, 92, 0, 0.3);
+        .dock-item.active { color: var(--p); }
+        .dock-item.active::after {
+            content: ''; position: absolute; bottom: -10px; width: 5px; height: 5px;
+            background: var(--p); border-radius: 50%; box-shadow: 0 0 15px var(--p);
         }
 
-        .section-view { display: none; height: 100vh; overflow-y: auto; padding-bottom: 150px; }
-        .section-view.active { display: block; animation: viewIn 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
-
-        @keyframes viewIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="no-scrollbar">
+<body>
 
-    <div class="mesh-bg"></div>
+    <div class="bg-orb" id="orb1" style="top: -200px; left: -200px;"></div>
+    <div class="bg-orb" id="orb2" style="bottom: -200px; right: -200px; background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);"></div>
 
-    <div id="app-shell">
+    <div class="p-8 pt-16 max-w-lg mx-auto h-full flex flex-col">
         
-        <section id="view-dash" class="section-view active p-6">
-            <header class="flex justify-between items-end mb-10 pt-10">
+        <header class="flex justify-between items-center mb-12">
+            <div>
+                <span class="text-[10px] font-black tracking-[6px] text-zinc-500 uppercase">System Status</span>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-xs font-bold text-zinc-300">Live & Secure</span>
+                </div>
+            </div>
+            <div class="w-12 h-12 glass-panel flex items-center justify-center border-zinc-800">
+                <i class="fa-solid fa-bolt text-orange-600"></i>
+            </div>
+        </header>
+
+        <div class="mb-12">
+            <h1 class="text-5xl font-black title-gradient leading-[0.9] tracking-tighter italic">
+                MENUSMART<br><span class="text-white">OS v.3</span>
+            </h1>
+            <p class="mt-4 text-zinc-500 text-sm font-medium max-w-[250px] leading-relaxed">
+                Platforma definitive për arkitekturën e gastronomisë moderne.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-5 mb-32">
+            
+            <div onclick="window.location.href='builder.html'" class="main-card col-span-2 h-44 glass-panel p-8 flex flex-col justify-between border-orange-600/20 relative group">
+                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-100 transition-opacity">
+                    <i class="fa-solid fa-wand-magic-sparkles text-4xl"></i>
+                </div>
                 <div>
-                    <h2 class="text-zinc-500 text-[10px] font-black uppercase tracking-[5px]">Mirësevini në</h2>
-                    <h1 class="text-4xl font-black italic tracking-tighter">TITAN <span class="text-orange-600">OS</span></h1>
+                    <h3 class="text-2xl font-black tracking-tighter uppercase italic">Studio</h3>
+                    <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest">Ndërto Menunë</p>
                 </div>
-                <div class="w-12 h-12 bg-white rounded-2xl overflow-hidden border-2 border-orange-600 shadow-2xl">
-                    <img id="global-logo" src="https://ui-avatars.com/api/?name=RS" class="w-full h-full object-cover">
-                </div>
-            </header>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="titan-card col-span-2 flex items-center justify-between bg-gradient-to-br from-orange-600/20 to-transparent border-orange-600/20">
-                    <div>
-                        <h3 class="font-black text-xl italic uppercase">Kodi Live</h3>
-                        <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">Skano & Testo Real-time</p>
-                    </div>
-                    <div id="qr-mini-preview"></div>
-                </div>
-
-                <div class="titan-card h-48 flex flex-col justify-between" onclick="switchView('view-ads')">
-                    <div class="w-10 h-10 bg-blue-600/20 rounded-xl flex items-center justify-center">
-                        <i class="fa-solid fa-bolt-lightning text-blue-500"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-black text-sm uppercase">Ad-Pulse</h4>
-                        <p class="text-[10px] text-zinc-500">Krijo Ofertat</p>
-                    </div>
-                </div>
-
-                <div class="titan-card h-48 flex flex-col justify-between" onclick="switchView('view-studio')">
-                    <div class="w-10 h-10 bg-orange-600/20 rounded-xl flex items-center justify-center">
-                        <i class="fa-solid fa-wand-magic-sparkles text-orange-600"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-black text-sm uppercase">Studio</h4>
-                        <p class="text-[10px] text-zinc-500">Arkitektura Menusë</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-studio" class="section-view p-6">
-            <h2 class="text-3xl font-black italic mb-8">ARKITEKTURA</h2>
-            
-            <div class="titan-card mb-6">
-                <input type="text" id="biz-name" oninput="syncTitan()" placeholder="Emri i Lokalit" class="w-full bg-transparent border-b border-zinc-800 p-4 text-xl font-bold focus:outline-none focus:border-orange-600 transition">
-                <div class="flex gap-4 mt-6">
-                    <button onclick="document.getElementById('logo-up').click()" class="flex-1 py-4 bg-zinc-900 rounded-2xl text-[10px] font-black uppercase tracking-widest">Ngarko Logon</button>
-                    <input type="file" id="logo-up" class="hidden" onchange="updateLogo(event)">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">Hyr në Studio</span>
+                    <i class="fa-solid fa-arrow-right-long text-orange-600"></i>
                 </div>
             </div>
 
-            <div id="category-list" class="space-y-4">
+            <div onclick="window.location.href='analytics.html'" class="main-card h-52 glass-panel p-6 flex flex-col justify-between">
+                <div class="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-chart-line text-zinc-400"></i>
                 </div>
-
-            <button onclick="addCategory()" class="w-full py-6 mt-6 border-2 border-dashed border-zinc-800 rounded-3xl text-zinc-500 font-black uppercase text-[10px] hover:border-orange-600 hover:text-orange-600 transition">+ Shto Kategori</button>
-        </section>
-
-        <section id="view-ads" class="section-view p-6">
-            <h2 class="text-3xl font-black italic mb-8 text-blue-500">AD-PULSE</h2>
-            <div class="titan-card bg-blue-600/5 border-blue-600/20 mb-6">
-                <p class="text-[10px] font-black uppercase tracking-[3px] text-blue-400 mb-4">Promocioni Aktiv</p>
-                <div class="relative h-40 bg-zinc-900 rounded-3xl overflow-hidden border border-white/5">
-                    <img id="ad-preview-img" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover opacity-50">
-                    <div class="absolute inset-0 p-6 flex flex-col justify-end">
-                        <h4 id="ad-text-preview" class="text-xl font-black uppercase italic">Happy Hour -50%</h4>
-                    </div>
+                <div>
+                    <h3 class="text-lg font-black tracking-tighter uppercase italic">Data</h3>
+                    <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Analitika Live</p>
                 </div>
             </div>
-            
-            <div class="titan-card space-y-4">
-                <input type="text" id="ad-title" oninput="updateAd()" placeholder="Titulli i Ofertës" class="w-full bg-black/40 p-4 rounded-2xl border border-white/5 focus:outline-none">
-                <button class="w-full py-4 bg-blue-600 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-blue-600/20">Shpërndaj në Social Media</button>
+
+            <div onclick="window.location.href='qr-code.html'" class="main-card h-52 glass-panel p-6 border-zinc-800/50 flex flex-col justify-between bg-zinc-900/20">
+                <div class="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-600/20">
+                    <i class="fa-solid fa-qrcode text-white"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black tracking-tighter uppercase italic">Forge</h3>
+                    <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Gjenero QR</p>
+                </div>
             </div>
-        </section>
+
+            <div class="main-card col-span-2 h-28 glass-panel p-6 flex items-center gap-6 border-blue-600/20">
+                <div class="w-14 h-14 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-500 text-xl">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-black uppercase tracking-widest">Marketing Hub</h3>
+                    <p class="text-[10px] text-zinc-500 mt-1 uppercase font-bold italic">Promovo biznesin tend</p>
+                </div>
+                <i class="fa-solid fa-chevron-right ml-auto text-zinc-800"></i>
+            </div>
+        </div>
+
+        <nav class="dock shadow-2xl">
+            <a href="index.html" class="dock-item active"><i class="fa-solid fa-house-chimney"></i></a>
+            <a href="builder.html" class="dock-item"><i class="fa-solid fa-plus-square"></i></a>
+            <a href="qr-code.html" class="dock-item"><i class="fa-solid fa-qrcode"></i></a>
+            <a href="analytics.html" class="dock-item"><i class="fa-solid fa-chart-pie"></i></a>
+        </nav>
 
     </div>
 
-    <nav class="titan-nav">
-        <div onclick="switchView('view-dash')" class="nav-item active" id="nav-dash">
-            <i class="fa-solid fa-house-user"></i>
-            <span class="nav-label">Home</span>
-        </div>
-        <div onclick="switchView('view-studio')" class="nav-item" id="nav-studio">
-            <i class="fa-solid fa-layer-group"></i>
-            <span class="nav-label">Studio</span>
-        </div>
-        <div onclick="switchView('view-ads')" class="nav-item" id="nav-ads">
-            <i class="fa-solid fa-bullhorn"></i>
-            <span class="nav-label">Ads</span>
-        </div>
-        <div onclick="window.location.href='live-menu.html'" class="nav-item">
-            <i class="fa-solid fa-up-right-from-square"></i>
-            <span class="nav-label">Live</span>
-        </div>
-    </nav>
-
     <script>
-        // CORE STATE
-        let titanData = {
-            name: "Lokal i Ri",
-            logo: "",
-            categories: [{id: 1, name: "Specialitete", items: [{name: "Titan Burger", price: 12}]}],
-            ad: { title: "Oferta e Fundjavës" }
-        };
-
-        // VIEW CONTROLLER
-        function switchView(viewId) {
-            document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
+        // Mouse/Touch Parallax Effect per Orbs
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
             
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const activeNav = viewId.replace('view-', 'nav-');
-            if(document.getElementById(activeNav)) document.getElementById(activeNav).classList.add('active');
-            
-            gsap.from(`#${viewId} > *`, { y: 20, opacity: 0, stagger: 0.1, duration: 0.5 });
-        }
+            gsap.to('#orb1', { x: x * 100, y: y * 100, duration: 2, ease: "power2.out" });
+            gsap.to('#orb2', { x: -x * 100, y: -y * 100, duration: 2, ease: "power2.out" });
+        });
 
-        // SYNC ENGINE
-        function syncTitan() {
-            titanData.name = document.getElementById('biz-name').value;
-            localStorage.setItem('Titan_State', JSON.stringify(titanData));
-            updateQR();
-        }
-
-        function updateLogo(e) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                titanData.logo = reader.result;
-                document.getElementById('global-logo').src = reader.result;
-                syncTitan();
-            }
-            reader.readAsDataURL(e.target.files[0]);
-        }
-
-        function updateQR() {
-            const qrCont = document.getElementById('qr-mini-preview');
-            qrCont.innerHTML = "";
-            new QRCode(qrCont, {
-                text: "https://menusmart.io/preview", // Dinamikisht këtu do shkonte linku real
-                width: 80,
-                height: 80,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
-        }
-
-        function updateAd() {
-            const val = document.getElementById('ad-title').value;
-            document.getElementById('ad-text-preview').innerText = val;
-        }
-
-        // STARTUP
+        // Entrance Animations
         window.onload = () => {
-            updateQR();
-            gsap.from(".titan-nav", { y: 150, duration: 1.2, ease: "expo.out" });
+            const tl = gsap.timeline();
+            
+            tl.from("body", { opacity: 0, duration: 1 })
+              .from("header", { y: -30, opacity: 0, duration: 0.8, ease: "expo.out" }, "-=0.5")
+              .from("h1", { x: -50, opacity: 0, duration: 1, ease: "expo.out" }, "-=0.5")
+              .from(".main-card", { 
+                  scale: 0.8, 
+                  opacity: 0, 
+                  stagger: 0.1, 
+                  duration: 1.2, 
+                  ease: "expo.out" 
+              }, "-=0.8")
+              .from(".dock", { y: 100, duration: 1, ease: "expo.out" }, "-=1");
         };
+
+        // Haptic Feedback Simulation (active state)
+        document.querySelectorAll('.main-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                gsap.to(card, { scale: 0.95, duration: 0.2 });
+            });
+            card.addEventListener('touchend', () => {
+                gsap.to(card, { scale: 1, duration: 0.2 });
+            });
+        });
     </script>
 </body>
 </html>
