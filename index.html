@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MenuSmart PRO | Enterprise OS</title>
+    <title>MenuSmart PRO | Gastronomy Revolution</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,206 +11,189 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --p: #FF5C00; --bg: #000; --card: rgba(10, 10, 10, 0.6); }
-        
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg); 
-            color: #fff; 
-            overflow: hidden; 
-            height: 100vh;
-            perspective: 1000px;
+        :root { --p: #FF5C00; --bg: #000; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
+
+        /* Cinematic Background */
+        .hero-glow {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 50%, #220a00 0%, #000 70%);
+            z-index: -1;
         }
 
-        /* Abstract Dynamic Background */
-        .bg-orb {
-            position: absolute; width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(255, 92, 0, 0.15) 0%, transparent 70%);
-            border-radius: 50%; filter: blur(80px); z-index: -1;
-        }
-
-        /* Glassmorphism Ultra-Refined */
-        .glass-panel {
-            background: rgba(15, 15, 15, 0.7);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .glass-card {
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 40px;
         }
 
-        /* Hover & Interaction Effects */
-        .main-card {
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            transform-style: preserve-3d;
-            cursor: pointer;
-        }
-        .main-card:hover {
-            transform: translateY(-10px) rotateX(5deg);
-            background: rgba(255, 255, 255, 0.03);
-            border-color: var(--p);
-        }
-
-        /* Typography Masterclass */
-        .title-gradient {
-            background: linear-gradient(180deg, #fff 0%, #666 100%);
+        .text-gradient {
+            background: linear-gradient(to bottom, #fff 30%, #555 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Nav Dock like iPhone */
-        .dock {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; height: 85px;
-            background: rgba(20, 20, 20, 0.8);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 42px;
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 100;
-        }
-
-        .dock-item {
-            font-size: 1.5rem; color: #444; transition: 0.4s;
-            position: relative; width: 50px; height: 50px;
+        .feature-icon {
+            width: 60px; height: 60px;
+            background: linear-gradient(45deg, var(--p), #ff8a00);
+            border-radius: 20px;
             display: flex; items-center; justify-content: center;
-        }
-        .dock-item.active { color: var(--p); }
-        .dock-item.active::after {
-            content: ''; position: absolute; bottom: -10px; width: 5px; height: 5px;
-            background: var(--p); border-radius: 50%; box-shadow: 0 0 15px var(--p);
+            box-shadow: 0 10px 30px rgba(255, 92, 0, 0.3);
         }
 
+        /* Floating Animation */
+        .floating { animation: float 6s ease-in-out infinite; }
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-20px); }
         }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="no-scrollbar">
 
-    <div class="bg-orb" id="orb1" style="top: -200px; left: -200px;"></div>
-    <div class="bg-orb" id="orb2" style="bottom: -200px; right: -200px; background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);"></div>
+    <div class="hero-glow"></div>
 
-    <div class="p-8 pt-16 max-w-lg mx-auto h-full flex flex-col">
-        
-        <header class="flex justify-between items-center mb-12">
-            <div>
-                <span class="text-[10px] font-black tracking-[6px] text-zinc-500 uppercase">System Status</span>
-                <div class="flex items-center gap-2 mt-1">
-                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span class="text-xs font-bold text-zinc-300">Live & Secure</span>
-                </div>
+    <nav class="fixed top-0 w-full z-[100] px-6 py-8 flex justify-between items-center bg-black/20 backdrop-blur-md">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center font-black">M</div>
+            <span class="font-black text-sm tracking-tighter uppercase">MenuSmart <span class="text-orange-600 italic">TITAN</span></span>
+        </div>
+        <button onclick="window.location.href='builder.html'" class="px-5 py-2 bg-white text-black rounded-full text-[10px] font-black uppercase tracking-widest active:scale-90 transition">Hyr në App</button>
+    </nav>
+
+    <main class="relative z-10">
+        <section class="min-h-screen flex flex-col justify-center px-8 pt-20">
+            <div class="floating mb-6">
+                <span class="px-4 py-2 border border-orange-600/30 rounded-full text-orange-500 text-[10px] font-black uppercase tracking-[4px] bg-orange-600/5">E ardhmja e Gastronomisë</span>
             </div>
-            <div class="w-12 h-12 glass-panel flex items-center justify-center border-zinc-800">
-                <i class="fa-solid fa-bolt text-orange-600"></i>
-            </div>
-        </header>
-
-        <div class="mb-12">
-            <h1 class="text-5xl font-black title-gradient leading-[0.9] tracking-tighter italic">
-                MENUSMART<br><span class="text-white">OS v.3</span>
+            <h1 class="text-6xl font-black text-gradient leading-[0.9] tracking-tighter mb-8">
+                MË SHUMË <br>SE NJË <span class="text-orange-600">MENU.</span>
             </h1>
-            <p class="mt-4 text-zinc-500 text-sm font-medium max-w-[250px] leading-relaxed">
-                Platforma definitive për arkitekturën e gastronomisë moderne.
+            <p class="text-zinc-400 text-lg max-w-sm leading-relaxed mb-10 font-light">
+                Sistemi i parë inteligjent që kthen tavolinën e thjeshtë në një qendër interaktive shitjesh dhe analitike.
             </p>
-        </div>
+            <div class="flex gap-4">
+                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center animate-bounce">
+                    <i class="fa-solid fa-arrow-down text-zinc-500"></i>
+                </div>
+                <span class="text-[10px] font-bold text-zinc-500 uppercase self-center tracking-widest">Zbulo Fuqinë e Titan</span>
+            </div>
+        </section>
 
-        <div class="grid grid-cols-2 gap-5 mb-32">
+        <section class="px-6 space-y-24 pb-40">
             
-            <div onclick="window.location.href='builder.html'" class="main-card col-span-2 h-44 glass-panel p-8 flex flex-col justify-between border-orange-600/20 relative group">
-                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-100 transition-opacity">
-                    <i class="fa-solid fa-wand-magic-sparkles text-4xl"></i>
+            <div class="reveal glass-card p-10 relative overflow-hidden group">
+                <div class="feature-icon mb-8">
+                    <i class="fa-solid fa-fingerprint text-white text-2xl"></i>
                 </div>
-                <div>
-                    <h3 class="text-2xl font-black tracking-tighter uppercase italic">Studio</h3>
-                    <p class="text-xs text-zinc-500 font-bold uppercase tracking-widest">Ndërto Menunë</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">Hyr në Studio</span>
-                    <i class="fa-solid fa-arrow-right-long text-orange-600"></i>
-                </div>
-            </div>
-
-            <div onclick="window.location.href='analytics.html'" class="main-card h-52 glass-panel p-6 flex flex-col justify-between">
-                <div class="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center">
-                    <i class="fa-solid fa-chart-line text-zinc-400"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-black tracking-tighter uppercase italic">Data</h3>
-                    <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Analitika Live</p>
+                <h3 class="text-3xl font-black mb-4 tracking-tighter italic">Identiteti Digjital</h3>
+                <p class="text-zinc-400 leading-relaxed font-medium">
+                    Ky App nuk është thjesht një listë ushqimesh. Është **Studioja** ku ju ndërtoni markën tuaj. Ndryshoni ngjyrat, logot dhe ofertat në kohë reale – pa pasur nevojë të printoni asgjë, kurrë më.
+                </p>
+                <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-20 transition-opacity">
+                    <i class="fa-solid fa-mobile-screen-button text-[150px]"></i>
                 </div>
             </div>
 
-            <div onclick="window.location.href='qr-code.html'" class="main-card h-52 glass-panel p-6 border-zinc-800/50 flex flex-col justify-between bg-zinc-900/20">
-                <div class="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-600/20">
-                    <i class="fa-solid fa-qrcode text-white"></i>
+            <div class="reveal glass-card p-10 border-blue-600/20">
+                <div class="feature-icon bg-gradient-to-br from-blue-600 to-cyan-500 mb-8 shadow-blue-600/20">
+                    <i class="fa-solid fa-brain text-white text-2xl"></i>
                 </div>
-                <div>
-                    <h3 class="text-lg font-black tracking-tighter uppercase italic">Forge</h3>
-                    <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Gjenero QR</p>
+                <h3 class="text-3xl font-black mb-4 tracking-tighter italic text-blue-500">Inteligjenca Live</h3>
+                <p class="text-zinc-400 leading-relaxed font-medium">
+                    Për herë të parë, ju shihni se çfarë po shikojnë klientët tuaj **TANI**. Sistemi ynë i Analitikës regjistron çdo skanim, duke ju treguar pikat e nxehta të shitjes dhe performancën e menusë në çdo sekondë.
+                </p>
+                <div class="mt-8 flex gap-2 h-12 items-end">
+                    <div class="w-2 bg-blue-600 h-full rounded-full animate-pulse"></div>
+                    <div class="w-2 bg-blue-600 h-1/2 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                    <div class="w-2 bg-blue-600 h-3/4 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
                 </div>
             </div>
 
-            <div class="main-card col-span-2 h-28 glass-panel p-6 flex items-center gap-6 border-blue-600/20">
-                <div class="w-14 h-14 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-500 text-xl">
-                    <i class="fa-solid fa-bullhorn"></i>
+            <div class="reveal glass-card p-10">
+                <div class="feature-icon bg-gradient-to-br from-green-600 to-emerald-500 mb-8 shadow-green-600/20">
+                    <i class="fa-solid fa-qrcode text-white text-2xl"></i>
                 </div>
-                <div>
-                    <h3 class="text-sm font-black uppercase tracking-widest">Marketing Hub</h3>
-                    <p class="text-[10px] text-zinc-500 mt-1 uppercase font-bold italic">Promovo biznesin tend</p>
-                </div>
-                <i class="fa-solid fa-chevron-right ml-auto text-zinc-800"></i>
+                <h3 class="text-3xl font-black mb-4 tracking-tighter italic text-green-500">QR Forge</h3>
+                <p class="text-zinc-400 leading-relaxed font-medium">
+                    Krijoni kodet QR më elegante në treg. Jo thjesht kodet e zeza klasike, por elemente dizajni që ftojnë klientin të interagohet. Integruar me **Marketing Hub** për të krijuar oferta të menjëhershme.
+                </p>
             </div>
-        </div>
 
-        <nav class="dock shadow-2xl">
-            <a href="index.html" class="dock-item active"><i class="fa-solid fa-house-chimney"></i></a>
-            <a href="builder.html" class="dock-item"><i class="fa-solid fa-plus-square"></i></a>
-            <a href="qr-code.html" class="dock-item"><i class="fa-solid fa-qrcode"></i></a>
-            <a href="analytics.html" class="dock-item"><i class="fa-solid fa-chart-pie"></i></a>
-        </nav>
+            <div class="text-center py-20">
+                <h2 class="text-4xl font-black mb-8 italic tracking-tighter uppercase">Gati të fillosh?</h2>
+                <div class="flex flex-col gap-4 max-w-xs mx-auto">
+                    <button onclick="window.location.href='builder.html'" class="w-full py-6 bg-orange-600 rounded-3xl font-black uppercase text-xs tracking-[4px] shadow-2xl shadow-orange-600/40">Ndërto Menunë Tani</button>
+                    <button onclick="window.location.href='analytics.html'" class="w-full py-6 bg-zinc-900 border border-white/10 rounded-3xl font-black uppercase text-xs tracking-[4px]">Shih Statistikave</button>
+                </div>
+            </div>
 
-    </div>
+        </section>
+    </main>
+
+    <nav class="fixed bottom-10 left-50 -translate-x-1/2 left-1/2 w-[85%] max-w-md h-20 glass-card flex justify-around items-center px-6 z-[100] border-white/10">
+        <a href="index.html" class="text-orange-600 flex flex-col items-center gap-1">
+            <i class="fa-solid fa-house-chimney text-xl"></i>
+            <span class="text-[8px] font-black uppercase">Home</span>
+        </a>
+        <a href="builder.html" class="text-zinc-500 flex flex-col items-center gap-1">
+            <i class="fa-solid fa-layer-group text-xl"></i>
+            <span class="text-[8px] font-black uppercase">Studio</span>
+        </a>
+        <a href="qr-code.html" class="text-zinc-500 flex flex-col items-center gap-1">
+            <i class="fa-solid fa-qrcode text-xl"></i>
+            <span class="text-[8px] font-black uppercase">Forge</span>
+        </a>
+        <a href="analytics.html" class="text-zinc-500 flex flex-col items-center gap-1">
+            <i class="fa-solid fa-chart-line text-xl"></i>
+            <span class="text-[8px] font-black uppercase">Data</span>
+        </a>
+    </nav>
 
     <script>
-        // Mouse/Touch Parallax Effect per Orbs
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            gsap.to('#orb1', { x: x * 100, y: y * 100, duration: 2, ease: "power2.out" });
-            gsap.to('#orb2', { x: -x * 100, y: -y * 100, duration: 2, ease: "power2.out" });
-        });
+        gsap.registerPlugin(ScrollTrigger);
 
-        // Entrance Animations
+        // Initial Entrance
         window.onload = () => {
-            const tl = gsap.timeline();
-            
-            tl.from("body", { opacity: 0, duration: 1 })
-              .from("header", { y: -30, opacity: 0, duration: 0.8, ease: "expo.out" }, "-=0.5")
-              .from("h1", { x: -50, opacity: 0, duration: 1, ease: "expo.out" }, "-=0.5")
-              .from(".main-card", { 
-                  scale: 0.8, 
-                  opacity: 0, 
-                  stagger: 0.1, 
-                  duration: 1.2, 
-                  ease: "expo.out" 
-              }, "-=0.8")
-              .from(".dock", { y: 100, duration: 1, ease: "expo.out" }, "-=1");
+            gsap.from("h1", { y: 50, opacity: 0, duration: 1.2, ease: "expo.out" });
+            gsap.from("p", { y: 30, opacity: 0, duration: 1.2, delay: 0.3, ease: "expo.out" });
         };
 
-        // Haptic Feedback Simulation (active state)
-        document.querySelectorAll('.main-card').forEach(card => {
-            card.addEventListener('touchstart', () => {
-                gsap.to(card, { scale: 0.95, duration: 0.2 });
+        // Scroll Reveal Animation per Artikujt
+        gsap.utils.toArray(".reveal").forEach((card) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 60,
+                opacity: 0,
+                scale: 0.9,
+                duration: 1,
+                ease: "expo.out"
             });
-            card.addEventListener('touchend', () => {
-                gsap.to(card, { scale: 1, duration: 0.2 });
-            });
+        });
+
+        // Background movement based on scroll
+        gsap.to(".hero-glow", {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            },
+            scale: 1.5,
+            opacity: 0.8
         });
     </script>
 </body>
