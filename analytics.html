@@ -2,106 +2,191 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics | MenuSmart PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MenuSmart Data | Real-Time Intelligence</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --p: #FF5C00; --bg: #000; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
-        .glass-card { background: rgba(20,20,20,0.6); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 30px; padding: 25px; }
-        .stat-value { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; }
+        :root { --p: #FF5C00; --bg: #080808; --card: rgba(18, 18, 18, 0.6); }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); color: #fff; 
+            overflow-x: hidden; padding-bottom: 120px;
+        }
+
+        /* Ambient Background Background */
+        .ambient-glow {
+            position: fixed; top: 0; right: 0; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255, 92, 0, 0.05) 0%, transparent 70%);
+            z-index: -1; pointer-events: none;
+        }
+
+        /* UI Elements Consistency */
+        .glass-card { 
+            background: var(--card); 
+            border: 1px solid rgba(255,255,255,0.03); 
+            backdrop-filter: blur(40px);
+            border-radius: 35px; padding: 30px; 
+            transition: transform 0.3s ease;
+        }
+        .glass-card:hover { border-color: rgba(255,255,255,0.1); }
+
+        .stat-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: #444; }
+        .stat-value { font-size: 42px; font-weight: 800; letter-spacing: -2px; }
+
+        /* Custom Progress Bar */
+        .progress-track { width: 100%; h: 6px; background: #111; border-radius: 100px; overflow: hidden; margin-top: 12px; }
+        .progress-fill { height: 100%; background: var(--p); border-radius: 100px; transition: width 1s cubic-bezier(0.23, 1, 0.32, 1); }
+
+        /* Nav Dock */
+        .nav-dock {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            padding: 8px 30px; background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(40px) saturate(150%); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 100px; display: flex; gap: 30px; align-items: center; z-index: 2000;
+        }
+        .nav-link { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: #555; transition: 0.3s; }
+        .nav-link.active { color: var(--p); }
+
+        .live-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 4px 12px; background: rgba(255, 92, 0, 0.1);
+            border-radius: 100px; font-size: 9px; font-weight: 800; color: var(--p);
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="p-6 pb-32 no-scrollbar">
+<body class="no-scrollbar">
 
-    <header class="flex justify-between items-center mb-10">
-        <div>
-            <h1 class="text-2xl font-black italic uppercase tracking-tighter">Analitika <span class="text-orange-600">Live</span></h1>
-            <p class="text-[10px] text-zinc-500 font-bold tracking-[3px] uppercase">Performanca në kohë reale</p>
-        </div>
-        <a href="index.html" class="w-12 h-12 bg-zinc-900 rounded-2xl flex items-center justify-center border border-white/5 text-zinc-400">
-            <i class="fa-solid fa-xmark"></i>
-        </a>
-    </header>
+    <div class="ambient-glow"></div>
 
-    <div class="grid grid-cols-2 gap-4 mb-6">
-        <div class="glass-card flex flex-col justify-between h-40 border-l-4 border-orange-600">
-            <i class="fa-solid fa-eye text-orange-600 text-xl"></i>
+    <main class="max-w-5xl mx-auto px-6 pt-12">
+        <header class="flex justify-between items-end mb-16">
             <div>
-                <h3 id="total-scans" class="text-4xl stat-value tabular-nums">0</h3>
-                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Skanime Totale</p>
+                <p class="text-[10px] font-black tracking-[5px] text-zinc-600 uppercase mb-2">Central Intelligence</p>
+                <h1 class="text-4xl font-black italic uppercase tracking-tighter">Data <span class="text-orange-600">Analytics</span></h1>
             </div>
-        </div>
-        <div class="glass-card flex flex-col justify-between h-40 border-l-4 border-green-500">
-            <i class="fa-solid fa-utensils text-green-500 text-xl"></i>
-            <div>
-                <h3 id="total-items-stat" class="text-4xl stat-value tabular-nums">0</h3>
-                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Artikuj Menu</p>
+            <div class="text-right">
+                <div class="live-tag mb-2"><span class="w-1.5 h-1.5 bg-orange-600 rounded-full animate-ping"></span> Live Feed</div>
+                <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Përditësuar: Tani</p>
             </div>
-        </div>
-    </div>
+        </header>
 
-    <div class="glass-card mb-6">
-        <div class="flex justify-between items-center mb-8">
-            <h4 class="text-xs font-bold uppercase tracking-widest text-zinc-400">Aktiviteti i Klientëve</h4>
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 bg-orange-600 rounded-full animate-ping"></span>
-                <span class="text-[9px] font-bold text-orange-600 uppercase">Live</span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card border-l-2 border-orange-600">
+                <span class="stat-label">Skanime Totale</span>
+                <div class="flex items-end gap-2 mt-4">
+                    <h3 id="total-scans" class="stat-value tabular-nums">482</h3>
+                    <span class="text-green-500 text-xs font-black mb-3">+12%</span>
+                </div>
+            </div>
+            <div class="glass-card">
+                <span class="stat-label">Artikuj në Menu</span>
+                <div class="flex items-end gap-2 mt-4">
+                    <h3 id="total-items-stat" class="stat-value tabular-nums">0</h3>
+                </div>
+            </div>
+            <div class="glass-card">
+                <span class="stat-label">Kohëzgjatja Mes.</span>
+                <div class="flex items-end gap-2 mt-4">
+                    <h3 class="stat-value tabular-nums">4.2</h3>
+                    <span class="text-zinc-500 text-xs font-black mb-3">MIN</span>
+                </div>
             </div>
         </div>
-        <div class="h-64">
-            <canvas id="liveChart"></canvas>
-        </div>
-    </div>
 
-    <div class="glass-card bg-zinc-900/30">
-        <h4 class="text-[10px] font-black uppercase tracking-[3px] text-zinc-500 mb-6">Pikat e nxehta (Peak Hours)</h4>
-        <div class="space-y-4">
-            <div class="flex justify-between items-center text-sm">
-                <span class="text-zinc-400">Drekë (12:00 - 15:00)</span>
-                <span class="font-bold text-orange-500">45% e vizitave</span>
+        <div class="glass-card mb-8">
+            <div class="flex justify-between items-center mb-10">
+                <h4 class="text-[10px] font-black uppercase tracking-[3px] text-zinc-500">Aktiviteti i Vizitorëve (24h)</h4>
+                <div class="flex gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-orange-600"></span>
+                        <span class="text-[9px] font-bold uppercase text-zinc-400">Skanime</span>
+                    </div>
+                </div>
             </div>
-            <div class="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                <div class="w-[45%] h-full bg-orange-600"></div>
+            <div class="h-[350px]">
+                <canvas id="liveChart"></canvas>
             </div>
         </div>
-    </div>
 
-    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md h-20 bg-zinc-900/90 backdrop-blur-xl rounded-3xl border border-white/10 flex justify-around items-center px-6 z-50">
-        <a href="index.html" class="text-zinc-500"><i class="fa-solid fa-house text-xl"></i></a>
-        <a href="builder.html" class="text-zinc-500"><i class="fa-solid fa-plus-square text-xl"></i></a>
-        <a href="qr-code.html" class="text-zinc-500"><i class="fa-solid fa-qrcode text-xl"></i></a>
-        <a href="analytics.html" class="text-orange-600"><i class="fa-solid fa-chart-pie text-xl"></i></a>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-card">
+                <h4 class="text-[10px] font-black uppercase tracking-[3px] text-zinc-500 mb-8">Peak Performance</h4>
+                <div class="space-y-8">
+                    <div>
+                        <div class="flex justify-between text-[11px] font-black uppercase tracking-widest mb-2">
+                            <span>Drekë (12:00 - 15:00)</span>
+                            <span class="text-orange-600">45%</span>
+                        </div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 45%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[11px] font-black uppercase tracking-widest mb-2">
+                            <span>Darkë (19:00 - 22:00)</span>
+                            <span class="text-orange-600">38%</span>
+                        </div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 38%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card flex items-center justify-center border-dashed border-zinc-800">
+                <div class="text-center">
+                    <i class="fa-solid fa-file-export text-zinc-800 text-3xl mb-4"></i>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-zinc-600">Export Full Report (PDF)</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="nav-dock">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="builder.html" class="nav-link">Studio</a>
+        <a href="qr-code.html" class="nav-link">Forge</a>
+        <a href="analytics.html" class="nav-link active">Data</a>
+        <div class="w-[1px] h-4 bg-zinc-800 mx-2"></div>
+        <button class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-[10px] text-white">
+            <i class="fa-solid fa-user"></i>
+        </button>
     </nav>
 
-    <script src="core-app.js"></script>
     <script>
         let myChart;
 
         function initChart() {
             const ctx = document.getElementById('liveChart').getContext('2d');
-            const data = MenuSmart.get();
-            
+            const masterData = JSON.parse(localStorage.getItem('menuSmart_MasterData')) || {};
+            const pColor = masterData.mainColor || '#FF5C00';
+
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
                     datasets: [{
-                        label: 'Skanime',
-                        data: [5, 12, 45, 38, 20, 65, 89, 34],
-                        borderColor: data.mainColor || '#FF5C00',
-                        backgroundColor: 'rgba(255, 92, 0, 0.1)',
+                        data: [12, 25, 85, 65, 40, 95, 120, 45],
+                        borderColor: pColor,
+                        backgroundColor: (context) => {
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                            gradient.addColorStop(0, pColor + '33');
+                            gradient.addColorStop(1, 'transparent');
+                            return gradient;
+                        },
                         fill: true,
                         tension: 0.4,
-                        pointRadius: 4,
-                        pointBackgroundColor: data.mainColor || '#FF5C00',
-                        borderWidth: 3
+                        borderWidth: 4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: pColor,
+                        pointHoverBorderWidth: 3
                     }]
                 },
                 options: {
@@ -109,41 +194,50 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { display: false, beginAtZero: true },
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.02)', drawBorder: false },
+                            ticks: { color: '#333', font: { size: 10, weight: '800' } }
+                        },
                         x: { 
                             grid: { display: false },
-                            ticks: { color: '#555', font: { size: 10, weight: 'bold' } }
+                            ticks: { color: '#333', font: { size: 10, weight: '800' } }
                         }
-                    }
+                    },
+                    interaction: { intersect: false, mode: 'index' }
                 }
             });
         }
 
         function refreshData() {
-            const data = MenuSmart.get();
-            
-            // Përditëso numrin e skanimeve nga memoria globale
-            document.getElementById('total-scans').innerText = data.stats ? data.stats.scans : 482;
-            
-            // Kalkulo artikujt totalë nga menuja reale
-            let totalItems = 0;
-            if (data.menu) data.menu.forEach(cat => totalItems += cat.items.length);
-            document.getElementById('total-items-stat').innerText = totalItems;
+            const raw = localStorage.getItem('menuSmart_MasterData');
+            if(raw) {
+                const data = JSON.parse(raw);
+                
+                // Update Items Count
+                let totalItems = 0;
+                if (data.menu) data.menu.forEach(cat => totalItems += cat.items.length);
+                document.getElementById('total-items-stat').innerText = totalItems;
 
-            // Përditëso ngjyrën e grafikut nëse ka ndryshuar te Builderi
-            myChart.data.datasets[0].borderColor = data.mainColor || '#FF5C00';
-            myChart.update();
+                // Sync Colors
+                if(data.mainColor) {
+                    document.documentElement.style.setProperty('--p', data.mainColor);
+                    myChart.data.datasets[0].borderColor = data.mainColor;
+                    myChart.update();
+                }
+            }
         }
 
         window.onload = () => {
             initChart();
             refreshData();
             
-            // Simulo përditësimin "Real-Time" çdo 5 sekonda
-            setInterval(refreshData, 5000);
-
-            // GSAP Entrance
-            gsap.from(".glass-card", { y: 20, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power2.out" });
+            // GSAP Animations
+            gsap.from(".glass-card", { 
+                y: 40, opacity: 0, stagger: 0.15, duration: 1.2, ease: "expo.out" 
+            });
+            gsap.from(".nav-dock", { 
+                y: 100, opacity: 0, duration: 1, delay: 0.8, ease: "expo.out" 
+            });
         };
     </script>
 </body>
