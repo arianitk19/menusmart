@@ -11,6 +11,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+
+
+
+/* Nav Bar - Spatial Dock (Consistency 10/10) */
+.nav-dock {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    width: 90%; max-width: 450px; height: 80px;
+    background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 40px;
+    display: flex; justify-content: space-around; align-items: center;
+    z-index: 9999; /* Sigurohet që qëndron mbi çdo gjë */
+}
+
+.nav-icon { 
+    color: #444; font-size: 1.2rem; 
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    display: flex; align-items: center; justify-content: center;
+    width: 60px; height: 60px; border-radius: 25px;
+}
+
+.nav-icon:hover { color: #fff; background: rgba(255,255,255,0.05); }
+
+.nav-icon.active { 
+    color: var(--p); 
+    transform: translateY(-8px); 
+    background: rgba(255, 92, 0, 0.05);
+}
+        
+
+        
         :root { --p: #FF5C00; --bg: #080808; --card: rgba(18, 18, 18, 0.6); }
         
         body { 
@@ -188,49 +218,13 @@
 
 
 <nav class="nav-dock">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="builder.html" class="nav-link active">Studio</a>
-        <a href="qr-code.html" class="nav-link">Forge</a>
-        <a href="analytics.html" class="nav-link">Data</a>
-        <div class="w-[1px] h-4 bg-zinc-800 mx-2"></div>
-        <button class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-[10px] text-white shadow-lg shadow-orange-600/20">
-            <i class="fa-solid fa-user"></i>
-        </button>
-    </nav>
+    <a href="index.html" class="nav-icon"><i class="fa-solid fa-house"></i></a>
+    <a href="builder.html" class="nav-icon active"><i class="fa-solid fa-cube"></i></a>
+    <a href="qr-code.html" class="nav-icon"><i class="fa-solid fa-qrcode"></i></a>
+    <a href="analytics.html" class="nav-icon"><i class="fa-solid fa-chart-bar"></i></a>
+</nav>
 
-    <style>
-        /* Stilimi specifik për Dock-un brenda Builder-it */
-        .nav-dock {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            padding: 8px 30px;
-            background: rgba(15, 15, 15, 0.8);
-            backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 100px;
-            display: flex; gap: 30px; align-items: center;
-            z-index: 2000; /* Sigurohet që qëndron mbi çdo element tjetër */
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
 
-        .nav-link {
-            font-size: 10px; font-weight: 600; text-transform: uppercase; 
-            letter-spacing: 2px; color: #555; transition: all 0.3s;
-            text-decoration: none;
-        }
-        
-        .nav-link:hover { color: #fff; }
-        .nav-link.active { color: var(--p); }
-
-        /* Rregullim i workspace që dock mos të mbulojë elementet e fundit */
-        #p-menu { padding-bottom: 120px !important; }
-    </style>
-
-    <script>
-        // Shto këtë te pjesa e window.onload ekzistuese për të animuar dock-un
-        gsap.from(".nav-dock", { y: 100, opacity: 0, duration: 1, delay: 0.5, ease: "expo.out" });
-    </script>
-
-            
 
             
         </main>
@@ -341,4 +335,5 @@
     </script>
 </body>
 </html>
+
 
