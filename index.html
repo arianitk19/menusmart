@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MenuSmart PRO | Gastronomy Revolution</title>
+    <title>MenuSmart TITAN | Genesis</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,188 +13,209 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
 
     <style>
         :root { --p: #FF5C00; --bg: #000; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
 
-        /* Cinematic Background */
-        .hero-glow {
-            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-            width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 50% 50%, #220a00 0%, #000 70%);
-            z-index: -1;
+        /* Loader */
+        #loader {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        .glass-card {
-            background: rgba(10, 10, 10, 0.4);
-            backdrop-filter: blur(25px);
+        /* Cinematic Background Elements */
+        .noise {
+            position: fixed; inset: 0; z-index: 1000; pointer-events: none;
+            background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.05;
+        }
+
+        .portal-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at center, #1a0a00 0%, #000 80%);
+        }
+
+        .glow-line {
+            position: absolute; width: 1px; height: 100vh;
+            background: linear-gradient(to bottom, transparent, var(--p), transparent);
+            opacity: 0.2;
+        }
+
+        /* Ultra-Modern Text Styles */
+        .title-reveal { font-family: 'Space Grotesk', sans-serif; clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+        .text-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.2); color: transparent; }
+
+        /* Bento Sections */
+        .bento-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 2rem; position: relative; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(50px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 40px;
+            padding: 40px;
         }
 
-        .text-gradient {
-            background: linear-gradient(to bottom, #fff 30%, #555 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Nav Bar - Spatial Dock */
+        .nav-dock {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 450px; height: 80px;
+            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 40px;
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 2000;
         }
 
-        .feature-icon {
-            width: 60px; height: 60px;
-            background: linear-gradient(45deg, var(--p), #ff8a00);
-            border-radius: 20px;
-            display: flex; items-center; justify-content: center;
-            box-shadow: 0 10px 30px rgba(255, 92, 0, 0.3);
-        }
+        .nav-icon { color: #444; font-size: 1.2rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-icon.active { color: var(--p); transform: translateY(-8px); }
 
-        /* Floating Animation */
-        .floating { animation: float 6s ease-in-out infinite; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .scan-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--p); box-shadow: 0 0 20px var(--p);
+            animation: scanning 3s linear infinite;
         }
+        @keyframes scanning { 0% { top: 0% } 100% { top: 100% } }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="no-scrollbar">
 
-    <div class="hero-glow"></div>
+    <div id="loader">
+        <div class="w-16 h-16 border-t-2 border-orange-600 rounded-full animate-spin mb-4"></div>
+        <h2 class="text-[10px] font-black uppercase tracking-[5px] text-zinc-500">Initializing Titan</h2>
+    </div>
 
-    <nav class="fixed top-0 w-full z-[100] px-6 py-8 flex justify-between items-center bg-black/20 backdrop-blur-md">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center font-black">M</div>
-            <span class="font-black text-sm tracking-tighter uppercase">MenuSmart <span class="text-orange-600 italic">TITAN</span></span>
-        </div>
-        <button onclick="window.location.href='builder.html'" class="px-5 py-2 bg-white text-black rounded-full text-[10px] font-black uppercase tracking-widest active:scale-90 transition">Hyr në App</button>
-    </nav>
+    <div class="noise"></div>
+    <div class="portal-bg"></div>
 
-    <main class="relative z-10">
-        <section class="min-h-screen flex flex-col justify-center px-8 pt-20">
-            <div class="floating mb-6">
-                <span class="px-4 py-2 border border-orange-600/30 rounded-full text-orange-500 text-[10px] font-black uppercase tracking-[4px] bg-orange-600/5">E ardhmja e Gastronomisë</span>
-            </div>
-            <h1 class="text-6xl font-black text-gradient leading-[0.9] tracking-tighter mb-8">
-                MË SHUMË <br>SE NJË <span class="text-orange-600">MENU.</span>
-            </h1>
-            <p class="text-zinc-400 text-lg max-w-sm leading-relaxed mb-10 font-light">
-                Sistemi i parë inteligjent që kthen tavolinën e thjeshtë në një qendër interaktive shitjesh dhe analitike.
-            </p>
-            <div class="flex gap-4">
-                <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center animate-bounce">
-                    <i class="fa-solid fa-arrow-down text-zinc-500"></i>
-                </div>
-                <span class="text-[10px] font-bold text-zinc-500 uppercase self-center tracking-widest">Zbulo Fuqinë e Titan</span>
+    <div class="glow-line" style="left: 20%;"></div>
+    <div class="glow-line" style="left: 80%;"></div>
+
+    <main id="main-content">
+
+        <section class="bento-section">
+            <div class="relative">
+                <span class="text-orange-600 font-black text-[10px] uppercase tracking-[8px] mb-4 block opacity-0" id="hero-tag">System 3.0 Live</span>
+                <h1 class="text-7xl font-black title-reveal leading-[0.8] tracking-tighter italic mb-8">
+                    <span class="block opacity-0" id="t1">THYEJ</span>
+                    <span class="block opacity-0 text-stroke" id="t2">LIMITET E</span>
+                    <span class="block opacity-0 text-orange-600" id="t3">MENUSË.</span>
+                </h1>
+                <p class="text-zinc-500 text-lg max-w-xs font-light leading-relaxed opacity-0" id="hero-p">
+                    MenuSmart Titan nuk është mjet pune. Është një armë për dominimin e gastronomisë.
+                </p>
             </div>
         </section>
 
-        <section class="px-6 space-y-24 pb-40">
-            
-            <div class="reveal glass-card p-10 relative overflow-hidden group">
-                <div class="feature-icon mb-8">
-                    <i class="fa-solid fa-fingerprint text-white text-2xl"></i>
+        <section class="bento-section">
+            <div class="glass-panel relative overflow-hidden" id="studio-reveal">
+                <div class="scan-line"></div>
+                <div class="flex justify-between items-start mb-10">
+                    <div class="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-white"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Studio Engine</span>
                 </div>
-                <h3 class="text-3xl font-black mb-4 tracking-tighter italic">Identiteti Digjital</h3>
-                <p class="text-zinc-400 leading-relaxed font-medium">
-                    Ky App nuk është thjesht një listë ushqimesh. Është **Studioja** ku ju ndërtoni markën tuaj. Ndryshoni ngjyrat, logot dhe ofertat në kohë reale – pa pasur nevojë të printoni asgjë, kurrë më.
+                <h3 class="text-4xl font-black tracking-tighter italic mb-6">Arshitektura e Re.</h3>
+                <p class="text-zinc-400 font-medium mb-8 leading-relaxed">
+                    Harrojini menutë PDF. Ky është një sistem operativ që lejon ndryshimin e çmimeve, ushqimeve dhe dizajnit në 0.2 sekonda. Klienti juaj thjesht skanon, ju keni kontrollin total.
                 </p>
-                <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-20 transition-opacity">
-                    <i class="fa-solid fa-mobile-screen-button text-[150px]"></i>
+                <div class="flex gap-4">
+                    <div class="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+                        <div class="h-full bg-orange-600 w-2/3"></div>
+                    </div>
                 </div>
             </div>
-
-            <div class="reveal glass-card p-10 border-blue-600/20">
-                <div class="feature-icon bg-gradient-to-br from-blue-600 to-cyan-500 mb-8 shadow-blue-600/20">
-                    <i class="fa-solid fa-brain text-white text-2xl"></i>
-                </div>
-                <h3 class="text-3xl font-black mb-4 tracking-tighter italic text-blue-500">Inteligjenca Live</h3>
-                <p class="text-zinc-400 leading-relaxed font-medium">
-                    Për herë të parë, ju shihni se çfarë po shikojnë klientët tuaj **TANI**. Sistemi ynë i Analitikës regjistron çdo skanim, duke ju treguar pikat e nxehta të shitjes dhe performancën e menusë në çdo sekondë.
-                </p>
-                <div class="mt-8 flex gap-2 h-12 items-end">
-                    <div class="w-2 bg-blue-600 h-full rounded-full animate-pulse"></div>
-                    <div class="w-2 bg-blue-600 h-1/2 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
-                    <div class="w-2 bg-blue-600 h-3/4 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
-                </div>
-            </div>
-
-            <div class="reveal glass-card p-10">
-                <div class="feature-icon bg-gradient-to-br from-green-600 to-emerald-500 mb-8 shadow-green-600/20">
-                    <i class="fa-solid fa-qrcode text-white text-2xl"></i>
-                </div>
-                <h3 class="text-3xl font-black mb-4 tracking-tighter italic text-green-500">QR Forge</h3>
-                <p class="text-zinc-400 leading-relaxed font-medium">
-                    Krijoni kodet QR më elegante në treg. Jo thjesht kodet e zeza klasike, por elemente dizajni që ftojnë klientin të interagohet. Integruar me **Marketing Hub** për të krijuar oferta të menjëhershme.
-                </p>
-            </div>
-
-            <div class="text-center py-20">
-                <h2 class="text-4xl font-black mb-8 italic tracking-tighter uppercase">Gati të fillosh?</h2>
-                <div class="flex flex-col gap-4 max-w-xs mx-auto">
-                    <button onclick="window.location.href='builder.html'" class="w-full py-6 bg-orange-600 rounded-3xl font-black uppercase text-xs tracking-[4px] shadow-2xl shadow-orange-600/40">Ndërto Menunë Tani</button>
-                    <button onclick="window.location.href='analytics.html'" class="w-full py-6 bg-zinc-900 border border-white/10 rounded-3xl font-black uppercase text-xs tracking-[4px]">Shih Statistikave</button>
-                </div>
-            </div>
-
         </section>
+
+        <section class="bento-section">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass-panel col-span-2 border-blue-600/20">
+                    <i class="fa-solid fa-bolt text-blue-500 text-3xl mb-6"></i>
+                    <h3 class="text-3xl font-black tracking-tighter italic mb-4">Inteligjenca Live</h3>
+                    <p class="text-zinc-400 text-sm">
+                        Çdo sekondë që një klient shikon menunë tuaj, Titan regjistron lëvizjen. Ju e dini çfarë shitet para se kamerieri të marrë porosinë.
+                    </p>
+                </div>
+                <div class="glass-panel bg-orange-600/10 border-orange-600/20">
+                    <h4 class="text-2xl font-black italic">100%</h4>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-orange-600">Digital Sync</p>
+                </div>
+                <div class="glass-panel bg-zinc-900/40">
+                    <h4 class="text-2xl font-black italic">0.0s</h4>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-zinc-600">Latency</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bento-section text-center">
+            <h2 class="text-5xl font-black italic tracking-tighter mb-12">GATI PËR<br><span class="text-stroke italic text-white">TITAN?</span></h2>
+            <button onclick="window.location.href='builder.html'" class="group relative w-full py-8 bg-white text-black rounded-full font-black uppercase text-sm tracking-[5px] overflow-hidden transition-all active:scale-95">
+                <span class="relative z-10">Fillo Ndërtimin</span>
+                <div class="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+            </button>
+        </section>
+
     </main>
 
-    <nav class="fixed bottom-10 left-50 -translate-x-1/2 left-1/2 w-[85%] max-w-md h-20 glass-card flex justify-around items-center px-6 z-[100] border-white/10">
-        <a href="index.html" class="text-orange-600 flex flex-col items-center gap-1">
-            <i class="fa-solid fa-house-chimney text-xl"></i>
-            <span class="text-[8px] font-black uppercase">Home</span>
-        </a>
-        <a href="builder.html" class="text-zinc-500 flex flex-col items-center gap-1">
-            <i class="fa-solid fa-layer-group text-xl"></i>
-            <span class="text-[8px] font-black uppercase">Studio</span>
-        </a>
-        <a href="qr-code.html" class="text-zinc-500 flex flex-col items-center gap-1">
-            <i class="fa-solid fa-qrcode text-xl"></i>
-            <span class="text-[8px] font-black uppercase">Forge</span>
-        </a>
-        <a href="analytics.html" class="text-zinc-500 flex flex-col items-center gap-1">
-            <i class="fa-solid fa-chart-line text-xl"></i>
-            <span class="text-[8px] font-black uppercase">Data</span>
-        </a>
+    <nav class="nav-dock">
+        <a href="index.html" class="nav-icon active"><i class="fa-solid fa-house"></i></a>
+        <a href="builder.html" class="nav-icon"><i class="fa-solid fa-cube"></i></a>
+        <a href="qr-code.html" class="nav-icon"><i class="fa-solid fa-qrcode"></i></a>
+        <a href="analytics.html" class="nav-icon"><i class="fa-solid fa-chart-bar"></i></a>
     </nav>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Initial Entrance
-        window.onload = () => {
-            gsap.from("h1", { y: 50, opacity: 0, duration: 1.2, ease: "expo.out" });
-            gsap.from("p", { y: 30, opacity: 0, duration: 1.2, delay: 0.3, ease: "expo.out" });
-        };
+        // LOADER HIDE
+        window.addEventListener('load', () => {
+            gsap.to("#loader", { opacity: 0, duration: 1, onComplete: () => {
+                document.getElementById('loader').style.display = 'none';
+                startAnims();
+            }});
+        });
 
-        // Scroll Reveal Animation per Artikujt
-        gsap.utils.toArray(".reveal").forEach((card) => {
-            gsap.from(card, {
-                scrollTrigger: {
-                    trigger: card,
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                },
-                y: 60,
-                opacity: 0,
-                scale: 0.9,
-                duration: 1,
-                ease: "expo.out"
+        function startAnims() {
+            const tl = gsap.timeline();
+
+            tl.to("#hero-tag", { opacity: 1, y: -10, duration: 0.8 })
+              .to("#t1", { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, "-=0.4")
+              .to("#t2", { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, "-=0.4")
+              .to("#t3", { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, "-=0.4")
+              .to("#hero-p", { opacity: 1, duration: 1 }, "-=0.2");
+
+            // Scroll animations for sections
+            gsap.utils.toArray(".glass-panel").forEach(panel => {
+                gsap.from(panel, {
+                    scrollTrigger: {
+                        trigger: panel,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
+                    },
+                    y: 100,
+                    opacity: 0,
+                    scale: 0.9,
+                    rotateX: 10,
+                    duration: 1.5,
+                    ease: "expo.out"
+                });
             });
-        });
 
-        // Background movement based on scroll
-        gsap.to(".hero-glow", {
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1
-            },
-            scale: 1.5,
-            opacity: 0.8
-        });
+            // Parallax Lines
+            gsap.to(".glow-line", {
+                scrollTrigger: {
+                    trigger: "body",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1
+                },
+                height: "150vh",
+                opacity: 0.5
+            });
+        }
     </script>
 </body>
 </html>
