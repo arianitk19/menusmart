@@ -3,219 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MenuSmart TITAN | Genesis</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>MenuSmart | Excellence in Gastronomy</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --p: #FF5C00; --bg: #000; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
-
-        /* Loader */
-        #loader {
-            position: fixed; inset: 0; background: #000; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-
-        /* Cinematic Background Elements */
-        .noise {
-            position: fixed; inset: 0; z-index: 1000; pointer-events: none;
-            background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.05;
-        }
-
-        .portal-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: radial-gradient(circle at center, #1a0a00 0%, #000 80%);
-        }
-
-        .glow-line {
-            position: absolute; width: 1px; height: 100vh;
-            background: linear-gradient(to bottom, transparent, var(--p), transparent);
-            opacity: 0.2;
-        }
-
-        /* Ultra-Modern Text Styles */
-        .title-reveal { font-family: 'Space Grotesk', sans-serif; clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
-        .text-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.2); color: transparent; }
-
-        /* Bento Sections */
-        .bento-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 2rem; position: relative; }
+        :root { --p: #FF5C00; --bg: #080808; --card: rgba(18, 18, 18, 0.4); }
         
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(50px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); 
+            color: #fff; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient Glow - Subtle & Expensive */
+        .ambient-light {
+            position: fixed; top: -10%; left: 50%; transform: translateX(-50%);
+            width: 80vw; height: 60vh;
+            background: radial-gradient(circle, rgba(255, 92, 0, 0.04) 0%, transparent 70%);
+            z-index: -1; pointer-events: none;
+        }
+
+        /* Professional Grid System */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* The Master Card - Studio */
+        .card-main {
+            grid-column: span 12;
+            background: linear-gradient(145deg, #111 0%, #080808 100%);
+            border: 1px solid rgba(255,255,255,0.04);
             border-radius: 40px;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+            transition: border 0.4s ease;
+        }
+        .card-main:hover { border-color: rgba(255, 92, 0, 0.3); }
+
+        /* Secondary Cards */
+        .card-secondary {
+            grid-column: span 6;
+            background: var(--card);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 35px;
             padding: 40px;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        /* Nav Bar - Spatial Dock */
+        /* Elegant Navigation Dock */
         .nav-dock {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 450px; height: 80px;
-            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 40px;
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 2000;
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+            padding: 8px 30px;
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 100px;
+            display: flex; gap: 35px; align-items: center;
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        .nav-icon { color: #444; font-size: 1.2rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .nav-icon.active { color: var(--p); transform: translateY(-8px); }
-
-        .scan-line {
-            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: var(--p); box-shadow: 0 0 20px var(--p);
-            animation: scanning 3s linear infinite;
+        .nav-link {
+            font-[500] text-[11px] uppercase tracking-[2px] text-zinc-500 transition-all hover:text-white flex items-center gap-2;
         }
-        @keyframes scanning { 0% { top: 0% } 100% { top: 100% } }
+        .nav-link.active { color: var(--p); }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Typography */
+        .h-mega { font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.04em; }
+        .h-sub { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3em; color: var(--p); }
+
+        /* Live Indicator */
+        .live-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 14px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 100px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; }
+
+        @media (max-width: 768px) {
+            .card-secondary { grid-column: span 12; }
+            .card-main { padding: 40px 30px; }
+            .h-mega { font-size: 3.5rem; }
+        }
     </style>
 </head>
-<body class="no-scrollbar">
+<body>
 
-    <div id="loader">
-        <div class="w-16 h-16 border-t-2 border-orange-600 rounded-full animate-spin mb-4"></div>
-        <h2 class="text-[10px] font-black uppercase tracking-[5px] text-zinc-500">Initializing Titan</h2>
-    </div>
+    <div class="ambient-light"></div>
 
-    <div class="noise"></div>
-    <div class="portal-bg"></div>
-
-    <div class="glow-line" style="left: 20%;"></div>
-    <div class="glow-line" style="left: 80%;"></div>
-
-    <main id="main-content">
-
-        <section class="bento-section">
-            <div class="relative">
-                <span class="text-orange-600 font-black text-[10px] uppercase tracking-[8px] mb-4 block opacity-0" id="hero-tag">System 3.0 Live</span>
-                <h1 class="text-7xl font-black title-reveal leading-[0.8] tracking-tighter italic mb-8">
-                    <span class="block opacity-0" id="t1">THYEJ</span>
-                    <span class="block opacity-0 text-stroke" id="t2">LIMITET E</span>
-                    <span class="block opacity-0 text-orange-600" id="t3">MENUSË.</span>
-                </h1>
-                <p class="text-zinc-500 text-lg max-w-xs font-light leading-relaxed opacity-0" id="hero-p">
-                    MenuSmart Titan nuk është mjet pune. Është një armë për dominimin e gastronomisë.
-                </p>
-            </div>
-        </section>
-
-        <section class="bento-section">
-            <div class="glass-panel relative overflow-hidden" id="studio-reveal">
-                <div class="scan-line"></div>
-                <div class="flex justify-between items-start mb-10">
-                    <div class="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-wand-magic-sparkles text-white"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Studio Engine</span>
+    <main class="pt-24 pb-48">
+        
+        <div class="grid-container">
+            
+            <div class="col-span-12 flex justify-between items-end mb-12 px-4">
+                <div>
+                    <div class="live-tag mb-6"><span class="dot animate-pulse"></span> Network Active</div>
+                    <h1 class="h-mega">STANDARDI I RI <br><span class="text-zinc-600">I GASTRONOMISË.</span></h1>
                 </div>
-                <h3 class="text-4xl font-black tracking-tighter italic mb-6">Arshitektura e Re.</h3>
-                <p class="text-zinc-400 font-medium mb-8 leading-relaxed">
-                    Harrojini menutë PDF. Ky është një sistem operativ që lejon ndryshimin e çmimeve, ushqimeve dhe dizajnit në 0.2 sekonda. Klienti juaj thjesht skanon, ju keni kontrollin total.
-                </p>
-                <div class="flex gap-4">
-                    <div class="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
-                        <div class="h-full bg-orange-600 w-2/3"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="bento-section">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="glass-panel col-span-2 border-blue-600/20">
-                    <i class="fa-solid fa-bolt text-blue-500 text-3xl mb-6"></i>
-                    <h3 class="text-3xl font-black tracking-tighter italic mb-4">Inteligjenca Live</h3>
-                    <p class="text-zinc-400 text-sm">
-                        Çdo sekondë që një klient shikon menunë tuaj, Titan regjistron lëvizjen. Ju e dini çfarë shitet para se kamerieri të marrë porosinë.
+                <div class="hidden md:block text-right max-w-[200px]">
+                    <p class="text-zinc-500 text-xs font-medium leading-relaxed uppercase tracking-tighter">
+                        Një ekosistem i plotë digjital për restorante që synojnë perfeksionin.
                     </p>
                 </div>
-                <div class="glass-panel bg-orange-600/10 border-orange-600/20">
-                    <h4 class="text-2xl font-black italic">100%</h4>
-                    <p class="text-[9px] font-bold uppercase tracking-widest text-orange-600">Digital Sync</p>
+            </div>
+
+            <div onclick="window.location.href='builder.html'" class="card-main group cursor-pointer">
+                <div class="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                        <h2 class="h-sub mb-4">Architecture</h2>
+                        <h3 class="text-4xl font-bold tracking-tight italic">THE STUDIO</h3>
+                        <p class="text-zinc-500 mt-6 max-w-md text-lg leading-relaxed font-light">
+                            Ndërfaqja më e avancuar në botë për menaxhimin e menusë. Ndryshoni gjithçka në kohë reale me precizion milimetrik.
+                        </p>
+                    </div>
+                    <div class="mt-12 flex items-center gap-4 text-white font-bold uppercase text-xs tracking-widest">
+                        <span>Launch Studio</span>
+                        <div class="w-10 h-[1px] bg-zinc-700 group-hover:w-20 group-hover:bg-orange-600 transition-all duration-500"></div>
+                    </div>
                 </div>
-                <div class="glass-panel bg-zinc-900/40">
-                    <h4 class="text-2xl font-black italic">0.0s</h4>
-                    <p class="text-[9px] font-bold uppercase tracking-widest text-zinc-600">Latency</p>
+                <div class="absolute right-[-10%] bottom-[-10%] w-2/3 h-2/3 bg-orange-600/5 blur-[120px] rounded-full"></div>
+            </div>
+
+            <div onclick="window.location.href='analytics.html'" class="card-secondary group cursor-pointer">
+                <i class="fa-solid fa-chart-pie text-zinc-700 text-3xl group-hover:text-orange-600 transition-colors"></i>
+                <div>
+                    <h3 class="text-2xl font-bold tracking-tight">DATA INSIGHTS</h3>
+                    <p class="text-zinc-500 text-sm mt-3 font-medium">Ktheni çdo skanim në një statistikë fitimi.</p>
                 </div>
             </div>
-        </section>
 
-        <section class="bento-section text-center">
-            <h2 class="text-5xl font-black italic tracking-tighter mb-12">GATI PËR<br><span class="text-stroke italic text-white">TITAN?</span></h2>
-            <button onclick="window.location.href='builder.html'" class="group relative w-full py-8 bg-white text-black rounded-full font-black uppercase text-sm tracking-[5px] overflow-hidden transition-all active:scale-95">
-                <span class="relative z-10">Fillo Ndërtimin</span>
-                <div class="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-            </button>
-        </section>
+            <div onclick="window.location.href='qr-code.html'" class="card-secondary group cursor-pointer border-zinc-800/40">
+                <i class="fa-solid fa-qrcode text-zinc-700 text-3xl group-hover:text-white transition-colors"></i>
+                <div>
+                    <h3 class="text-2xl font-bold tracking-tight">QR ENGINE</h3>
+                    <p class="text-zinc-500 text-sm mt-3 font-medium">Gjenerimi i kodeve me rezolucion maksimal.</p>
+                </div>
+            </div>
 
+            <div class="card-main bg-zinc-900/20 border-zinc-800/30">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-12">
+                    <div class="max-w-md">
+                        <h2 class="h-sub mb-4">Marketing</h2>
+                        <h3 class="text-3xl font-bold tracking-tight">Ofertat që shesin.</h3>
+                        <p class="text-zinc-500 mt-4 text-sm leading-relaxed">
+                            Krijoni reklama interaktive që shfaqen direkt në telefonin e klientit tuaj. Inteligjenca që rrit vlerën e çdo porosie.
+                        </p>
+                    </div>
+                    <div class="w-full md:w-64 h-40 bg-black/40 rounded-3xl border border-white/5 flex items-center justify-center italic text-zinc-700 font-black text-xs tracking-widest uppercase">
+                        Ad-Pulse Live Preview
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <nav class="nav-dock">
-        <a href="index.html" class="nav-icon active"><i class="fa-solid fa-house"></i></a>
-        <a href="builder.html" class="nav-icon"><i class="fa-solid fa-cube"></i></a>
-        <a href="qr-code.html" class="nav-icon"><i class="fa-solid fa-qrcode"></i></a>
-        <a href="analytics.html" class="nav-icon"><i class="fa-solid fa-chart-bar"></i></a>
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="builder.html" class="nav-link">Studio</a>
+        <a href="qr-code.html" class="nav-link">Forge</a>
+        <a href="analytics.html" class="nav-link">Data</a>
+        <div class="w-[1px] h-4 bg-zinc-800 mx-2"></div>
+        <button class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-[10px] text-white shadow-lg shadow-orange-600/20">
+            <i class="fa-solid fa-user"></i>
+        </button>
     </nav>
 
     <script>
-        gsap.registerPlugin(ScrollTrigger);
+        // Smooth Entrance
+        window.onload = () => {
+            gsap.from(".h-mega", { y: 100, opacity: 0, duration: 1.2, ease: "expo.out" });
+            gsap.from(".card-main, .card-secondary", { 
+                y: 50, 
+                opacity: 0, 
+                stagger: 0.1, 
+                duration: 1.4, 
+                ease: "expo.out",
+                delay: 0.2
+            });
+            gsap.from(".nav-dock", { y: 100, opacity: 0, duration: 1, delay: 0.8, ease: "expo.out" });
+        };
 
-        // LOADER HIDE
-        window.addEventListener('load', () => {
-            gsap.to("#loader", { opacity: 0, duration: 1, onComplete: () => {
-                document.getElementById('loader').style.display = 'none';
-                startAnims();
-            }});
-        });
+        // Subtle Parallax for Cards
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.card-main, .card-secondary');
+            const mouseX = e.clientX / window.innerWidth - 0.5;
+            const mouseY = e.clientY / window.innerHeight - 0.5;
 
-        function startAnims() {
-            const tl = gsap.timeline();
-
-            tl.to("#hero-tag", { opacity: 1, y: -10, duration: 0.8 })
-              .to("#t1", { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, "-=0.4")
-              .to("#t2", { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, "-=0.4")
-              .to("#t3", { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, "-=0.4")
-              .to("#hero-p", { opacity: 1, duration: 1 }, "-=0.2");
-
-            // Scroll animations for sections
-            gsap.utils.toArray(".glass-panel").forEach(panel => {
-                gsap.from(panel, {
-                    scrollTrigger: {
-                        trigger: panel,
-                        start: "top 85%",
-                        toggleActions: "play none none reverse"
-                    },
-                    y: 100,
-                    opacity: 0,
-                    scale: 0.9,
-                    rotateX: 10,
-                    duration: 1.5,
-                    ease: "expo.out"
+            cards.forEach(card => {
+                gsap.to(card, {
+                    x: mouseX * 20,
+                    y: mouseY * 20,
+                    duration: 1,
+                    ease: "power2.out"
                 });
             });
-
-            // Parallax Lines
-            gsap.to(".glow-line", {
-                scrollTrigger: {
-                    trigger: "body",
-                    start: "top top",
-                    end: "bottom bottom",
-                    scrub: 1
-                },
-                height: "150vh",
-                opacity: 0.5
-            });
-        }
+        });
     </script>
 </body>
 </html>
