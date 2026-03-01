@@ -2,113 +2,185 @@
 <html lang="sq">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MenuSmart | The Infinite Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MenuSmart Studio | Precision Builder</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --p: #FF5C00; --bg: #050505; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
+        :root { --p: #FF5C00; --bg: #080808; --card: rgba(18, 18, 18, 0.6); }
         
-        .studio-container { display: grid; grid-template-columns: 380px 1fr; height: 100vh; }
-        .control-center { background: #0c0c0c; border-right: 1px solid rgba(255,255,255,0.05); overflow-y: auto; padding: 25px; }
-        .workspace { background: radial-gradient(circle at center, #111 0%, #000 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); 
+            color: #fff; 
+            overflow: hidden; 
+            height: 100vh;
+        }
 
-        /* Canvas Mockups */
-        .canvas { background: #fff; color: #000; transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); position: relative; overflow-y: auto; }
-        .view-mobile { width: 340px; height: 680px; border-radius: 45px; box-shadow: 0 0 0 12px #1a1a1a, 0 40px 100px rgba(0,0,0,0.8); }
-        .view-desktop { width: 90%; height: 85%; border-radius: 15px; }
+        /* Studio Grid */
+        .studio-container { 
+            display: grid; 
+            grid-template-columns: 400px 1fr; 
+            height: 100vh; 
+        }
 
-        .ui-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
-        .ui-input { width: 100%; background: #000; border: 1px solid #222; padding: 12px; border-radius: 12px; font-size: 13px; color: #fff; }
+        /* Side Panel (Control Center) */
+        .control-center { 
+            background: #0c0c0c; 
+            border-right: 1px solid rgba(255,255,255,0.03); 
+            overflow-y: auto; 
+            padding: 40px 30px; 
+            z-index: 10;
+        }
+
+        /* Workspace with Ambient Glow */
+        .workspace { 
+            background: #000; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+        }
+        .ambient-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; height: 80%;
+            background: radial-gradient(circle, rgba(255, 92, 0, 0.03) 0%, transparent 70%);
+            z-index: 0; pointer-events: none;
+        }
+
+        /* High-End Canvas Mockups */
+        .canvas { 
+            background: #fff; 
+            color: #000; 
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); 
+            position: relative; 
+            z-index: 1;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.9);
+        }
+        .view-mobile { width: 360px; height: 740px; border-radius: 50px; border: 12px solid #1a1a1a; }
+        .view-desktop { width: 90%; height: 85%; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* UI Elements Consistency */
+        .ui-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #444; margin-bottom: 12px; display: block; }
+        .ui-card { background: var(--card); border: 1px solid rgba(255,255,255,0.03); border-radius: 30px; padding: 25px; margin-bottom: 24px; }
         
-        .view-btn { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #1a1a1a; color: #555; }
-        .view-btn.active { background: var(--p); color: #fff; }
-        
+        .ui-input { 
+            width: 100%; background: #000; border: 1px solid #1a1a1a; 
+            padding: 16px; border-radius: 16px; font-size: 13px; color: #fff;
+            transition: all 0.3s;
+        }
+        .ui-input:focus { border-color: var(--p); outline: none; background: #050505; }
+
+        .btn-primary { 
+            width: 100%; py: 16px; background: var(--p); color: #fff; 
+            border-radius: 16px; font-weight: 800; font-size: 11px; 
+            text-transform: uppercase; letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .btn-primary:active { scale: 0.95; }
+
+        /* Navigation Buttons */
+        .view-btn { 
+            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; 
+            border-radius: 18px; background: rgba(255,255,255,0.03); color: #555; border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .view-btn.active { background: #fff; color: #000; }
+
+        .sync-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 4px 12px; background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.1); border-radius: 100px;
+            font-size: 9px; font-weight: 800; color: #22c55e; text-transform: uppercase;
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Pulse for Cloud Sync */
-        .sync-indicator { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 10px #22c55e; }
     </style>
 </head>
 <body>
 
     <div class="studio-container">
         <aside class="control-center no-scrollbar">
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-2">
-                    <div class="sync-indicator"></div>
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Live Sync</span>
-                </div>
-                <a href="index.html" class="text-zinc-500 hover:text-white transition"><i class="fa-solid fa-house-user"></i></a>
-            </div>
+            <header class="flex items-center justify-between mb-12">
+                <div class="sync-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Engine Active</div>
+                <a href="index.html" class="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 border border-white/5 text-zinc-500 hover:text-white transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+            </header>
 
-            <div class="ui-card border-l-4 border-orange-600">
-                <p class="text-[10px] font-black tracking-[3px] text-zinc-500 uppercase mb-4">Branding</p>
+            <h2 class="text-xs font-black uppercase tracking-[4px] text-zinc-600 mb-8">Studio Configuration</h2>
+
+            <div class="ui-card">
+                <span class="ui-label">Identity</span>
                 <input type="text" id="biz-name" oninput="sync()" placeholder="Emri i Biznesit" class="ui-input mb-4">
-                <button onclick="document.getElementById('logo-up').click()" class="w-full py-3 bg-zinc-900 border border-white/5 rounded-xl text-[10px] font-bold hover:bg-zinc-800 transition uppercase">Ngarko Logon</button>
+                <button onclick="document.getElementById('logo-up').click()" class="w-full py-4 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition">Ngarko Logon</button>
                 <input type="file" id="logo-up" class="hidden" onchange="loadLogo(event)">
             </div>
 
             <div class="ui-card">
-                <p class="text-[10px] font-black tracking-[3px] text-zinc-500 uppercase mb-4">Stilizimi</p>
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="bg-black p-3 rounded-xl border border-white/5">
-                        <span class="text-[8px] block mb-2 opacity-50 uppercase">Ngjyra Kryesore</span>
-                        <input type="color" id="color-p" value="#FF5C00" oninput="sync()" class="w-full h-8 bg-transparent cursor-pointer">
+                <span class="ui-label">Visual Aesthetic</span>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                        <span class="text-[8px] font-bold block mb-3 opacity-30 uppercase tracking-widest">Primary</span>
+                        <input type="color" id="color-p" value="#FF5C00" oninput="sync()" class="w-full h-10 bg-transparent cursor-pointer rounded-lg overflow-hidden">
                     </div>
-                    <div class="bg-black p-3 rounded-xl border border-white/5">
-                        <span class="text-[8px] block mb-2 opacity-50 uppercase">Teksti</span>
-                        <input type="color" id="color-txt" value="#000000" oninput="sync()" class="w-full h-8 bg-transparent cursor-pointer">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                        <span class="text-[8px] font-bold block mb-3 opacity-30 uppercase tracking-widest">Text</span>
+                        <input type="color" id="color-txt" value="#000000" oninput="sync()" class="w-full h-10 bg-transparent cursor-pointer rounded-lg overflow-hidden">
                     </div>
                 </div>
             </div>
 
-            <div class="ui-card bg-orange-600/5 border-orange-600/20">
-                <p class="text-[10px] font-black tracking-[3px] text-orange-600 uppercase mb-4">Shto Kategoritë</p>
+            <div class="ui-card border-l-2 border-orange-600">
+                <span class="ui-label" style="color: var(--p)">Structure</span>
                 <div class="flex gap-2">
-                    <input type="text" id="cat-input" placeholder="Psh: Pica" class="ui-input">
-                    <button onclick="addCategory()" class="bg-orange-600 px-4 rounded-xl"><i class="fa-solid fa-plus text-white"></i></button>
+                    <input type="text" id="cat-input" placeholder="Kategoria (Psh: Pica)" class="ui-input">
+                    <button onclick="addCategory()" class="bg-orange-600 w-16 flex items-center justify-center rounded-xl hover:bg-orange-500 transition"><i class="fa-solid fa-plus text-white"></i></button>
                 </div>
             </div>
 
-            <div id="item-panel" class="ui-card hidden animate-in slide-in-from-bottom duration-500">
-                <p class="text-[10px] font-black tracking-[3px] text-zinc-500 uppercase mb-4">Shto Artikull</p>
-                <select id="cat-selector" class="ui-input mb-3"></select>
-                <input type="text" id="item-name" placeholder="Emri i ushqimit" class="ui-input mb-3">
-                <input type="text" id="item-price" placeholder="Çmimi (Psh: 5.50)" class="ui-input mb-3">
-                <button onclick="addItem()" class="w-full py-3 bg-white text-black font-black text-[10px] rounded-xl uppercase">Shto në Menu</button>
+            <div id="item-panel" class="ui-card hidden">
+                <span class="ui-label">Product Entry</span>
+                <select id="cat-selector" class="ui-input mb-3 bg-zinc-900 border-none"></select>
+                <input type="text" id="item-name" placeholder="Emri i artikullit" class="ui-input mb-3">
+                <input type="text" id="item-price" placeholder="Çmimi (€)" class="ui-input mb-4">
+                <button onclick="addItem()" class="btn-primary py-4 shadow-xl shadow-orange-600/10">Shto në Menu</button>
             </div>
         </aside>
 
         <main class="workspace">
-            <div class="absolute top-8 flex gap-3 bg-zinc-900/90 p-2 rounded-2xl border border-white/10 backdrop-blur-xl z-50">
-                <button onclick="changeView('mobile')" id="btn-mobile" class="view-btn active"><i class="fa-solid fa-mobile-button"></i></button>
-                <button onclick="changeView('desktop')" id="btn-desktop" class="view-btn"><i class="fa-solid fa-laptop"></i></button>
+            <div class="ambient-glow"></div>
+
+            <div class="absolute top-10 flex gap-4 bg-zinc-900/40 p-2 rounded-2xl border border-white/5 backdrop-blur-2xl z-50">
+                <button onclick="changeView('mobile')" id="btn-mobile" class="view-btn active"><i class="fa-solid fa-mobile-screen"></i></button>
+                <button onclick="changeView('desktop')" id="btn-desktop" class="view-btn"><i class="fa-solid fa-display"></i></button>
             </div>
 
-            <div id="canvas" class="canvas view-mobile no-scrollbar">
-                <div class="p-12 text-center">
-                    <div id="logo-preview" class="w-20 h-20 mx-auto mb-4 hidden">
+            <div id="canvas" class="canvas view-mobile no-scrollbar overflow-y-auto">
+                <div class="p-16 text-center">
+                    <div id="logo-preview" class="w-24 h-24 mx-auto mb-6 hidden">
                         <img id="p-logo-img" src="" class="w-full h-full object-contain">
                     </div>
-                    <h2 id="p-biz-name" class="text-2xl font-black uppercase tracking-tighter">Business Name</h2>
-                    <div id="accent-line" class="w-10 h-1 bg-orange-600 mx-auto mt-4"></div>
+                    <h2 id="p-biz-name" class="text-3xl font-black uppercase tracking-tighter italic">Business</h2>
+                    <div id="accent-line" class="w-12 h-1.5 bg-orange-600 mx-auto mt-6 rounded-full"></div>
                 </div>
 
-                <div id="p-menu" class="px-8 pb-24 space-y-10">
+                <div id="p-menu" class="px-10 pb-32 space-y-12">
                     <div class="text-center py-20 opacity-10">
                         <i class="fa-solid fa-layer-group text-4xl mb-4"></i>
-                        <p class="text-[10px] font-bold uppercase tracking-widest">Menuja është bosh</p>
+                        <p class="text-[10px] font-black uppercase tracking-widest">Shto Kategoritë për të filluar</p>
                     </div>
                 </div>
             </div>
 
-            <div class="absolute bottom-8 right-8 text-[9px] font-bold text-zinc-700 tracking-[4px] uppercase">
-                MenuSmart Architecture v2.6
+            <div class="absolute bottom-10 flex justify-between w-full px-12 opacity-20">
+                <span class="text-[9px] font-black tracking-[5px] uppercase">MenuSmart Architecture</span>
+                <span class="text-[9px] font-black tracking-[5px] uppercase italic">10/10 Precision</span>
             </div>
         </main>
     </div>
@@ -116,17 +188,19 @@
     <script>
         let menuData = [];
 
+        // SYNC ENGINE - Konsistenca totale me index.html
         function sync() {
             const bizName = document.getElementById('biz-name').value;
             const pColor = document.getElementById('color-p').value;
             const txtColor = document.getElementById('color-txt').value;
             
-            // Update UI
             document.getElementById('p-biz-name').innerText = bizName || "Business Name";
             document.getElementById('accent-line').style.backgroundColor = pColor;
             document.getElementById('canvas').style.color = txtColor;
             
-            // Save to LocalStorage for index.html
+            // CSS Variable update per UI
+            document.documentElement.style.setProperty('--p', pColor);
+
             const appData = {
                 name: bizName,
                 mainColor: pColor,
@@ -142,6 +216,7 @@
             menuData.push({ name: name, items: [] });
             document.getElementById('cat-input').value = '';
             document.getElementById('item-panel').classList.remove('hidden');
+            gsap.from("#item-panel", { y: 20, opacity: 0, duration: 0.5 });
             updateSelectors();
             render();
             sync();
@@ -170,12 +245,14 @@
             const pColor = document.getElementById('color-p').value;
             
             cont.innerHTML = menuData.map(cat => `
-                <div class="animate-in fade-in slide-in-from-right duration-500">
-                    <h3 class="font-black border-b-2 border-orange-600 inline-block mb-6 uppercase tracking-tight text-lg" style="border-color: ${pColor}">${cat.name}</h3>
-                    <div class="space-y-6">
+                <div class="menu-cat">
+                    <h3 class="font-black border-b-4 border-orange-600 inline-block mb-8 uppercase tracking-tighter text-xl italic" style="border-color: ${pColor}">${cat.name}</h3>
+                    <div class="space-y-8">
                         ${cat.items.map(it => `
-                            <div class="flex justify-between items-center border-b border-black/5 pb-2">
-                                <span class="font-bold text-sm uppercase">${it.name}</span>
+                            <div class="flex justify-between items-end border-b border-black/5 pb-3">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-sm uppercase tracking-tight">${it.name}</span>
+                                </div>
                                 <span class="font-black text-sm">${it.price}€</span>
                             </div>
                         `).join('')}
@@ -199,8 +276,14 @@
             canvas.className = `canvas no-scrollbar view-${type}`;
             document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`btn-${type}`).classList.add('active');
-            gsap.from(canvas, { scale: 0.95, opacity: 0, duration: 0.5 });
+            gsap.from(canvas, { scale: 0.98, opacity: 0, duration: 0.6, ease: "expo.out" });
         }
+
+        // Entrance animation
+        window.onload = () => {
+            gsap.from(".control-center", { x: -100, opacity: 0, duration: 1, ease: "expo.out" });
+            gsap.from(".canvas", { scale: 0.9, opacity: 0, duration: 1.2, delay: 0.2, ease: "expo.out" });
+        };
     </script>
 </body>
 </html>
