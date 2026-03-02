@@ -14,41 +14,58 @@
 
 
 
-
-/* Stilimi i Butonit Floating */
+/* Kontenieri kryesor */
 .fab-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    -webkit-tap-highlight-color: transparent;
 }
 
+/* Menuja e fshehur */
+#fab-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 15px;
+    pointer-events: none; /* Nuk lejon klikimin kur është mbyllur */
+    opacity: 0;
+    transform: translateY(20px) scale(0);
+    transform-origin: bottom;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Butonat e vegjël */
 .fab-item {
+    background: rgba(20, 20, 20, 0.9) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 92, 0, 0.2) !important;
+    color: #fff !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    backdrop-filter: blur(10px);
 }
 
-.fab-item:hover {
-    background: var(--p);
-    transform: scale(1.1);
+/* Efekti kur shtypet butoni me gisht */
+.fab-item:active {
+    transform: scale(0.9);
+    background: var(--p) !important;
 }
 
-/* Kur menuja është e hapur */
+/* GJENDJA E HAPUR (.fab-open shtohet me JS) */
 .fab-open #fab-menu {
-    scale: 1;
+    pointer-events: auto;
     opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 .fab-open #fab-icon {
-    transform: rotate(45deg); /* Kthehet në X kur hapet */
+    transform: rotate(45deg); /* Plus (+) bëhet X */
 }
 
-/* Animacioni i shfaqjes së butonave një nga një */
+/* Animacioni i shkallëzuar (stagger) për secilin buton */
 .fab-open .fab-item:nth-child(1) { transition-delay: 0.05s; }
 .fab-open .fab-item:nth-child(2) { transition-delay: 0.1s; }
 .fab-open .fab-item:nth-child(3) { transition-delay: 0.15s; }
-
-        
-
 
 
 
@@ -419,18 +436,50 @@
 
 
 
+let isFabOpen = false;
+
 function toggleFab() {
     const container = document.querySelector('.fab-container');
-    container.classList.toggle('fab-open');
+    const menu = document.getElementById('fab-menu');
+    const items = document.querySelectorAll('.fab-item');
+
+    if (!isFabOpen) {
+        // HAPJA
+        container.classList.add('active-fab');
+        menu.classList.remove('hidden');
+        gsap.to(items, { 
+            display: "flex",
+            opacity: 1, 
+            y: 0, 
+            scale: 1, 
+            duration: 0.4, 
+            stagger: 0.1, // I bën të dalin një nga një
+            ease: "back.out(1.7)" 
+        });
+        isFabOpen = true;
+    } else {
+        // MBYLLJA
+        gsap.to(items, { 
+            opacity: 0, 
+            y: 20, 
+            scale: 0, 
+            duration: 0.3, 
+            stagger: 0.05,
+            onComplete: () => {
+                menu.classList.add('hidden');
+                container.classList.remove('active-fab');
+            }
+        });
+        isFabOpen = false;
+    }
 }
 
-// Modifikojmë pak changeView që ta mbyllë menunë pasi zgjedhim pamjen
-const originalChangeView = changeView;
+// Sigurohu që mbyllen kur klikon një opsion
+const oldView = changeView;
 changeView = function(type) {
-    originalChangeView(type); // Thirr funksionin origjinal
-    document.querySelector('.fab-container').classList.remove('fab-open'); // Mbyll butonin
-};
-        
+    oldView(type);
+    if(isFabOpen) toggleFab(); // E mbyll automatikisht
+}
 
         
 
@@ -438,6 +487,7 @@ changeView = function(type) {
     </script>
 </body>
 </html>
+
 
 
 
