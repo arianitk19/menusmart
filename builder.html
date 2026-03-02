@@ -514,40 +514,6 @@ changeView = function(type) {
 
 
 
-
-        
-
-
-
-
-function changeView(type) {
-    const canvas = document.getElementById('canvas');
-    if (!canvas) return;
-
-    // 1. Pastrojmë klasat e vjetra të pamjes
-    canvas.classList.remove('view-mobile', 'view-desktop', 'view-a4');
-
-    // 2. Shtojmë klasën e re bazuar në zgjedhjen
-    canvas.classList.add(`view-${type}`);
-
-    // 3. Animacion GSAP për të bërë tranzicionin "Titan"
-    gsap.fromTo(canvas, 
-        { scale: 0.95, opacity: 0.8 }, 
-        { 
-            scale: 1, 
-            opacity: 1, 
-            duration: 0.6, 
-            ease: "expo.out" 
-        }
-    );
-
-    // 4. Mbyllim menunë shpalosëse automatikisht (pasi u krye zgjedhja)
-    if (typeof isFabOpen !== 'undefined' && isFabOpen) {
-        toggleFab();
-    }
-}
-
-
         
 
         
@@ -556,6 +522,7 @@ function changeView(type) {
     </script>
 </body>
 </html>
+
 
 
 
