@@ -14,7 +14,7 @@
 
 
 
-/* Kontenieri kryesor */
+/* Kontenieri */
 .fab-container {
     display: flex;
     flex-direction: column;
@@ -22,56 +22,72 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* Butoni Kryesor: Zezë me Plus të Bardhë */
+#fab-main {
+    width: 56px;
+    height: 56px;
+    background: #000000; /* E zezë absolute */
+    color: #ffffff; /* Plus i bardhë */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    border: 2px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#fab-main:active { transform: scale(0.9); }
+
+#fab-icon {
+    font-size: 20px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
 /* Menuja e fshehur */
 #fab-menu {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 15px;
-    pointer-events: none; /* Nuk lejon klikimin kur është mbyllur */
+    gap: 15px;
+    margin-bottom: 20px;
     opacity: 0;
+    pointer-events: none;
     transform: translateY(20px) scale(0);
     transform-origin: bottom;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Butonat e vegjël */
+/* Butonat e vegjël (Opsionet) */
 .fab-item {
-    background: rgba(20, 20, 20, 0.9) !important;
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 92, 0, 0.2) !important;
-    color: #fff !important;
+    width: 48px;
+    height: 48px;
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
 }
 
-/* Efekti kur shtypet butoni me gisht */
-.fab-item:active {
-    transform: scale(0.9);
-    background: var(--p) !important;
-}
-
-/* GJENDJA E HAPUR (.fab-open shtohet me JS) */
+/* Gjendja Aktive (Kur klasa shtohet me JS) */
 .fab-open #fab-menu {
-    pointer-events: auto;
     opacity: 1;
+    pointer-events: auto;
     transform: translateY(0) scale(1);
 }
 
 .fab-open #fab-icon {
-    transform: rotate(45deg); /* Plus (+) bëhet X */
+    transform: rotate(45deg); /* Plus bëhet X */
 }
 
-/* Animacioni i shkallëzuar (stagger) për secilin buton */
-.fab-open .fab-item:nth-child(1) { transition-delay: 0.05s; }
-.fab-open .fab-item:nth-child(2) { transition-delay: 0.1s; }
-.fab-open .fab-item:nth-child(3) { transition-delay: 0.15s; }
 
 
 
-
-
-
+        
 
         
 
@@ -209,22 +225,21 @@
 
 
 
-
-            <div class="fab-container fixed bottom-[120px] right-6 z-[10000]">
-    <div id="fab-menu" class="flex flex-col gap-3 mb-4 scale-0 opacity-0 origin-bottom transition-all duration-300">
-        <button onclick="changeView('mobile')" class="fab-item bg-zinc-900 border border-white/10 w-12 h-12 rounded-full flex items-center justify-center text-zinc-400 hover:text-white shadow-xl">
+<div class="fab-container fixed bottom-[120px] right-6 z-[10000]">
+    <div id="fab-menu">
+        <button onclick="changeView('mobile')" class="fab-item">
             <i class="fa-solid fa-mobile-screen"></i>
         </button>
-        <button onclick="changeView('desktop')" class="fab-item bg-zinc-900 border border-white/10 w-12 h-12 rounded-full flex items-center justify-center text-zinc-400 hover:text-white shadow-xl">
+        <button onclick="changeView('desktop')" class="fab-item">
             <i class="fa-solid fa-display"></i>
         </button>
-        <button onclick="changeView('a4')" class="fab-item bg-zinc-900 border border-white/10 w-12 h-12 rounded-full flex items-center justify-center text-zinc-400 hover:text-white shadow-xl">
+        <button onclick="changeView('a4')" class="fab-item">
             <i class="fa-solid fa-file-invoice"></i>
         </button>
     </div>
     
-    <button id="fab-main" onclick="toggleFab()" class="w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center text-white shadow-2xl shadow-orange-600/40 transition-transform active:scale-90">
-        <i class="fa-solid fa-plus text-xl transition-transform duration-300" id="fab-icon"></i>
+    <button id="fab-main" onclick="toggleFab()">
+        <i class="fa-solid fa-plus" id="fab-icon"></i>
     </button>
 </div>
 
@@ -440,53 +455,57 @@ let isFabOpen = false;
 
 function toggleFab() {
     const container = document.querySelector('.fab-container');
-    const menu = document.getElementById('fab-menu');
     const items = document.querySelectorAll('.fab-item');
 
     if (!isFabOpen) {
-        // HAPJA
-        container.classList.add('active-fab');
-        menu.classList.remove('hidden');
-        gsap.to(items, { 
-            display: "flex",
-            opacity: 1, 
-            y: 0, 
-            scale: 1, 
-            duration: 0.4, 
-            stagger: 0.1, // I bën të dalin një nga një
-            ease: "back.out(1.7)" 
-        });
+        // HAPJA - Perfeksioni elastik
+        container.classList.add('fab-open');
+        gsap.fromTo(items, 
+            { y: 30, opacity: 0, scale: 0.5 }, 
+            { 
+                y: 0, 
+                opacity: 1, 
+                scale: 1, 
+                duration: 0.4, 
+                stagger: 0.08, 
+                ease: "back.out(1.8)" 
+            }
+        );
         isFabOpen = true;
     } else {
-        // MBYLLJA
+        // MBYLLJA - Zbehje e shpejtë
         gsap.to(items, { 
-            opacity: 0, 
             y: 20, 
-            scale: 0, 
-            duration: 0.3, 
+            opacity: 0, 
+            scale: 0.5, 
+            duration: 0.25, 
             stagger: 0.05,
+            ease: "power2.in",
             onComplete: () => {
-                menu.classList.add('hidden');
-                container.classList.remove('active-fab');
+                container.classList.remove('fab-open');
             }
         });
         isFabOpen = false;
     }
 }
 
-// Sigurohu që mbyllen kur klikon një opsion
-const oldView = changeView;
+// Integrimi me sistemin tënd të changeView
+const originalChangeView = typeof changeView === 'function' ? changeView : null;
 changeView = function(type) {
-    oldView(type);
-    if(isFabOpen) toggleFab(); // E mbyll automatikisht
-}
-
+    if (originalChangeView) originalChangeView(type);
+    
+    // Mbyllja automatike pas zgjedhjes
+    if (isFabOpen) {
+        toggleFab();
+    }
+};
         
 
         
     </script>
 </body>
 </html>
+
 
 
 
