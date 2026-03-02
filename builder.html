@@ -376,12 +376,31 @@
             gsap.from(canvas, { scale: 0.98, opacity: 0, duration: 0.6, ease: "expo.out" });
         }
 
-        // Entrance animation
-        window.onload = () => {
-            gsap.from(".control-center", { x: -100, opacity: 0, duration: 1, ease: "expo.out" });
-            gsap.from(".canvas", { scale: 0.9, opacity: 0, duration: 1.2, delay: 0.2, ease: "expo.out" });
-        };
 
+
+        
+
+
+// Përdorim DOMContentLoaded që të nisë SAKTËSISHT kur tekstet janë gati, pa pritur fotot
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // Krijojmë një linjë kohore që lëvizjet të jenë të lidhura
+    const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+
+    tl.from(".control-center", { 
+        x: -40,           // Më pak lëvizje = më shumë seriozitet
+        opacity: 0, 
+        duration: 0.8 
+    })
+    .from(".canvas", { 
+        scale: 0.98,      // Zmadhim shumë delikat
+        opacity: 0, 
+        duration: 0.7 
+    }, "-=0.5");         // Fillon ndërsa kontrolli po vjen (mbivendosje)
+});
+        
+
+        
 
 
 
@@ -413,6 +432,7 @@ function changeView(type) {
     </script>
 </body>
 </html>
+
 
 
 
