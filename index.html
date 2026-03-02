@@ -175,7 +175,7 @@
 
         // LOADER HIDE
         window.addEventListener('load', () => {
-            gsap.to("#loader", { opacity: 0, duration: 0.3, onComplete: () => {
+            gsap.to("#loader", { opacity: 0, duration: 0.1, onComplete: () => {
                 document.getElementById('loader').style.display = 'none';
                 startAnims();
             }});
@@ -222,6 +222,7 @@
     </script>
 </body>
 </html>
+
 
 
 
