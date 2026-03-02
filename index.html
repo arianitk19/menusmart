@@ -87,7 +87,7 @@
 
     <div id="loader">
         <div class="w-16 h-16 border-t-2 border-orange-600 rounded-full animate-spin mb-4"></div>
-        <h2 class="text-[10px] font-black uppercase tracking-[5px] text-zinc-500">boneMENU Pak klikime, shumë klas.</h2>
+        <h2 class="text-[10px] font-black uppercase tracking-[5px] text-zinc-500">boneMENU</h2>
     </div>
 
     <div class="noise"></div>
@@ -175,7 +175,7 @@
 
         // LOADER HIDE
         window.addEventListener('load', () => {
-            gsap.to("#loader", { opacity: 0, duration: 0.1, onComplete: () => {
+            gsap.to("#loader", { opacity: 0, duration: 0.2, onComplete: () => {
                 document.getElementById('loader').style.display = 'none';
                 startAnims();
             }});
@@ -222,6 +222,7 @@
     </script>
 </body>
 </html>
+
 
 
 
