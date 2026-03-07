@@ -14,6 +14,41 @@
 
 
 
+/* Dimensionet e Kanvasit */
+.view-mobile { 
+    width: 360px; 
+    height: 740px; 
+    border-radius: 40px; 
+    border: 10px solid #1a1a1a; 
+}
+
+.view-desktop { 
+    width: 95%; 
+    height: 85%; 
+    border-radius: 12px; 
+    border: 1px solid rgba(0,0,0,0.1); 
+}
+
+/* Letra A4 - Dimensioni i saktë 210x297mm */
+.view-a4 { 
+    width: 210mm; 
+    height: 297mm; 
+    border-radius: 0; 
+    border: none;
+    box-shadow: 0 0 40px rgba(0,0,0,0.2);
+}
+
+/* Sigurojmë që përmbajtja brenda A4 të mos prishet */
+.canvas {
+    transform-origin: center center;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    background: white;
+}
+
+        
+
+
+        
 /* Kontenieri */
 .fab-container {
     display: flex;
@@ -231,7 +266,11 @@
 
 
 
-
+<div id="fab-menu">
+    <button onclick="printMenu()" class="fab-item" style="background: #2563eb !important;">
+        <i class="fa-solid fa-print"></i>
+    </button>
+</div>
 
   
 
@@ -512,16 +551,78 @@ changeView = function(type) {
 
 
 
+function changeView(type) {
+    const canvas = document.getElementById('canvas');
+    if (!canvas) return;
 
+    // 1. Ndryshimi i klasave (Largojmë të vjetrat, shtojmë të renë)
+    canvas.classList.remove('view-mobile', 'view-desktop', 'view-a4');
+    canvas.classList.add(`view-${type}`);
+
+    // 2. Update vizual i butonave në barin e sipërm (nëse ekzistojnë)
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    const targetBtn = document.getElementById(`btn-${type}`);
+    if (targetBtn) targetBtn.classList.add('active');
+
+    // 3. Animacioni i tranzicionit "Smooth"
+    gsap.fromTo(canvas, 
+        { scale: 0.95, opacity: 0.7 }, 
+        { scale: 1, opacity: 1, duration: 0.6, ease: "expo.out" }
+    );
+
+    // 4. Mbyllja e menusë FAB (+) nëse është e hapur
+    if (isFabOpen) {
+        toggleFab();
+    }
+    
+    // 5. Scroll automatik në fillim të kanvasit
+    canvas.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
         
 
-        
+       function printMenu() {
+    // 1. Kalojmë automatikisht në pamjen A4 për saktësi
+    changeView('a4');
+
+    // 2. Një vonesë e vogël që Kanvasi të stabilizohet
+    setTimeout(() => {
+        const printContent = document.getElementById('canvas').innerHTML;
+        const originalContent = document.body.innerHTML;
+
+        // Krijojmë një dritare të përkohshme për printim
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Menu - ${document.getElementById('biz-name').value}</title>
+                    <script src="https://cdn.tailwindcss.com"></script>
+                    <style>
+                        body { background: white; padding: 0; margin: 0; }
+                        @page { size: A4; margin: 0; }
+                    </style>
+                </head>
+                <body>
+                    <div class="view-a4" style="width: 210mm; height: 297mm; margin: auto;">
+                        ${printContent}
+                    </div>
+                    <script>
+                        window.onload = function() { 
+                            window.print(); 
+                            window.close(); 
+                        };
+                 
+            
+        `);
+        printWindow.document.close();
+    }, 500);
+} 
 
         
     </script>
 </body>
 </html>
+
 
 
 
