@@ -593,20 +593,12 @@ function changeView(type) {
         // Krijojmë një dritare të përkohshme për printim
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Print Menu - ${document.getElementById('biz-name').value}</title>
-                    <script src="https://cdn.tailwindcss.com"></script>
-                    <style>
-                        body { background: white; padding: 0; margin: 0; }
-                        @page { size: A4; margin: 0; }
-                    </style>
-                </head>
-                <body>
+            
+                
+               
                     <div class="view-a4" style="width: 210mm; height: 297mm; margin: auto;">
                         ${printContent}
-                    </div>
-                    <script>
+                    
                         window.onload = function() { 
                             window.print(); 
                             window.close(); 
@@ -622,6 +614,7 @@ function changeView(type) {
     </script>
 </body>
 </html>
+
 
 
 
