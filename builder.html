@@ -14,12 +14,46 @@
 
 
 
-/* Dimensionet e Kanvasit */
+/* Dimensionet Inteligjente */
+.canvas {
+    transform-origin: top center;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    background: white;
+    margin: auto;
+    position: relative;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; /* Scroll i lëmuar në iOS */
+}
+
+/* Desktop Mockup View */
 .view-mobile { 
     width: 360px; 
     height: 740px; 
-    border-radius: 40px; 
-    border: 10px solid #1a1a1a; 
+    border-radius: 45px; 
+    border: 12px solid #161616; 
+    box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);
+}
+
+/* Real-Time Mobile App Mode (Kur hapet nga telefoni) */
+@media (max-width: 768px) {
+    .view-mobile {
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100svh !important; /* Short Viewport Height për mobile */
+        border: none !important;
+        border-radius: 0 !important;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    /* Fshehim mbetjet e desktopit në mobile */
+    .control-center, .ambient-glow {
+        display: none !important;
+    }
+    
+    .studio-container {
+        display: block !important;
+    }
 }
 
 .view-desktop { 
@@ -29,132 +63,106 @@
     border: 1px solid rgba(0,0,0,0.1); 
 }
 
-/* Letra A4 - Dimensioni i saktë 210x297mm */
 .view-a4 { 
     width: 210mm; 
     height: 297mm; 
     border-radius: 0; 
-    border: none;
     box-shadow: 0 0 40px rgba(0,0,0,0.2);
 }
+        
 
-/* Sigurojmë që përmbajtja brenda A4 të mos prishet */
-.canvas {
-    transform-origin: center center;
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    background: white;
+
+        
+/* Update tek butoni kryesor për feedback më të mirë */
+#fab-main {
+    /* ... kodi yt ekzistues ... */
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    /* Shto një dritë të brendshme (inner glow) */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2);
 }
 
-        
+#fab-main:active { 
+    transform: scale(0.88); /* Pak më shumë shtypje */
+    filter: brightness(1.2); /* Ndizet pak kur shtypet */
+}
+
+/* Update tek opsionet (fab-item) */
+.fab-item {
+    /* ... kodi yt ekzistues ... */
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efekt elastik */
+}
+
+.fab-item:active {
+    transform: scale(0.9);
+    background: var(--p); /* Merr ngjyrën tënde primare kur klikohet */
+}
 
 
-        
-/* Kontenieri */
-.fab-container {
-    display: flex;
-    flex-direction: column;
+
+
+
+        .nav-dock {
+    position: fixed; 
+    /* Përdorim calc për të shtuar hapësirën e sigurisë së telefonit */
+    bottom: calc(20px + env(safe-area-inset-bottom)); 
+    left: 50%; 
+    transform: translateX(-50%);
+    width: 92%; /* Pak më i gjerë në mobile për stabilitet */
+    max-width: 450px; 
+    height: 70px; /* Pak më i hollë për estetikë mobile */
+    background: rgba(15, 15, 15, 0.75); 
+    backdrop-filter: blur(25px) saturate(180%); /* Efekt Apple i pastër */
+    -webkit-backdrop-filter: blur(25px) saturate(180%); /* Për Safari/iOS */
+    border: 1px solid rgba(255,255,255,0.08); 
+    border-radius: 35px;
+    display: flex; 
+    justify-content: space-around; 
     align-items: center;
+    z-index: 9999;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+
+
+
+        .nav-icon { 
+    color: #666; 
+    font-size: 1.3rem; 
+    position: relative;
+    transition: 0.5s cubic-bezier(0.2, 1, 0.3, 1); 
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    width: 25%; /* Ndarje e barabartë për prekje më të lehtë */
+    height: 100%;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Butoni Kryesor: Zezë me Plus të Bardhë */
-#fab-main {
-    width: 56px;
-    height: 56px;
-    background: #000000; /* E zezë absolute */
-    color: #ffffff; /* Plus i bardhë */
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    border: 2px solid rgba(255,255,255,0.1);
-    cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#fab-main:active { transform: scale(0.9); }
-
-#fab-icon {
-    font-size: 20px;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-/* Menuja e fshehur */
-#fab-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 20px;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(20px) scale(0);
-    transform-origin: bottom;
-}
-
-/* Butonat e vegjël (Opsionet) */
-.fab-item {
-    width: 48px;
-    height: 48px;
-    background: rgba(20, 20, 20, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    cursor: pointer;
-}
-
-/* Gjendja Aktive (Kur klasa shtohet me JS) */
-.fab-open #fab-menu {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0) scale(1);
-}
-
-.fab-open #fab-icon {
-    transform: rotate(45deg); /* Plus bëhet X */
-}
-
-
-
-
-
-
-        
-
-
-        
-        
-
-/* Nav Bar - Spatial Dock (Consistency 10/10) */
-.nav-dock {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-    width: 90%; max-width: 450px; height: 80px;
-    background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(30px);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 40px;
-    display: flex; justify-content: space-around; align-items: center;
-    z-index: 9999; /* Sigurohet që qëndron mbi çdo gjë */
-}
-
-.nav-icon { 
-    color: #444; font-size: 1.2rem; 
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    display: flex; align-items: center; justify-content: center;
-    width: 60px; height: 60px; border-radius: 25px;
-}
-
-.nav-icon:hover { color: #fff; background: rgba(255,255,255,0.05); }
-
 .nav-icon.active { 
     color: var(--p); 
-    transform: translateY(-8px); 
-    background: rgba(255, 92, 0, 0.05);
+    transform: translateY(-5px); 
 }
+
+/* Shto një pikë (indicator) poshtë ikonës aktive */
+.nav-icon.active::after {
+    content: '';
+    position: absolute;
+    bottom: 12px;
+    width: 4px;
+    height: 4px;
+    background: var(--p);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--p);
+}
+
+
         
+        
+
+
 
         
         :root { --p: #FF5C00; --bg: #080808; --card: rgba(18, 18, 18, 0.6); }
@@ -499,121 +507,128 @@
 
 
 
+// Variable globale për të mbajtur gjendjen e menusë
 let isFabOpen = false;
 
-function toggleFab() {
+/**
+ * Funksioni Universal për Ndryshimin e Pamjes
+ * @param {string} type - 'mobile', 'desktop', 'a4'
+ */
+function changeView(type) {
+    const canvas = document.getElementById('canvas');
+    if (!canvas) return;
+
+    // 1. Menaxhimi i Klasave me Saktësi
+    canvas.classList.remove('view-mobile', 'view-desktop', 'view-a4');
+    canvas.classList.add(`view-${type}`);
+
+    // 2. Feedback-u Vizual i Butonave (Active State)
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    const targetBtn = document.getElementById(`btn-${type}`);
+    if (targetBtn) targetBtn.classList.add('active');
+
+    // 3. Animacioni "Smooth" me Hardware Acceleration
+    gsap.fromTo(canvas, 
+        { scale: 0.96, opacity: 0.8, y: 10 }, 
+        { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "expo.out", force3D: true }
+    );
+
+    // 4. Mbyllja Inteligjente e FAB
+    if (isFabOpen) {
+        toggleFab();
+    }
+    
+    // 5. Scroll "Smooth" në krye - Esenciale për Mobile
+    canvas.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+
+        function toggleFab() {
     const container = document.querySelector('.fab-container');
     const items = document.querySelectorAll('.fab-item');
 
     if (!isFabOpen) {
-        // HAPJA - Perfeksioni elastik
         container.classList.add('fab-open');
         gsap.fromTo(items, 
-            { y: 30, opacity: 0, scale: 0.5 }, 
+            { y: 30, opacity: 0, scale: 0.5, rotation: -15 }, 
             { 
-                y: 0, 
-                opacity: 1, 
-                scale: 1, 
-                duration: 0.4, 
-                stagger: 0.08, 
-                ease: "back.out(1.8)" 
+                y: 0, opacity: 1, scale: 1, rotation: 0,
+                duration: 0.4, stagger: 0.08, ease: "back.out(1.8)" 
             }
         );
         isFabOpen = true;
     } else {
-        // MBYLLJA - Zbehje e shpejtë
         gsap.to(items, { 
-            y: 20, 
-            opacity: 0, 
-            scale: 0.5, 
-            duration: 0.25, 
-            stagger: 0.05,
-            ease: "power2.in",
-            onComplete: () => {
-                container.classList.remove('fab-open');
-            }
+            y: 20, opacity: 0, scale: 0.5, duration: 0.25, 
+            stagger: 0.05, ease: "power2.in",
+            onComplete: () => container.classList.remove('fab-open')
         });
         isFabOpen = false;
     }
 }
 
-// Integrimi me sistemin tënd të changeView
-const originalChangeView = typeof changeView === 'function' ? changeView : null;
-changeView = function(type) {
-    if (originalChangeView) originalChangeView(type);
-    
-    // Mbyllja automatike pas zgjedhjes
-    if (isFabOpen) {
-        toggleFab();
-    }
-};
 
 
 
 
-function changeView(type) {
-    const canvas = document.getElementById('canvas');
-    if (!canvas) return;
-
-    // 1. Ndryshimi i klasave (Largojmë të vjetrat, shtojmë të renë)
-    canvas.classList.remove('view-mobile', 'view-desktop', 'view-a4');
-    canvas.classList.add(`view-${type}`);
-
-    // 2. Update vizual i butonave në barin e sipërm (nëse ekzistojnë)
-    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-    const targetBtn = document.getElementById(`btn-${type}`);
-    if (targetBtn) targetBtn.classList.add('active');
-
-    // 3. Animacioni i tranzicionit "Smooth"
-    gsap.fromTo(canvas, 
-        { scale: 0.95, opacity: 0.7 }, 
-        { scale: 1, opacity: 1, duration: 0.6, ease: "expo.out" }
-    );
-
-    // 4. Mbyllja e menusë FAB (+) nëse është e hapur
-    if (isFabOpen) {
-        toggleFab();
-    }
-    
-    // 5. Scroll automatik në fillim të kanvasit
-    canvas.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-        
-
-       function printMenu() {
-    // 1. Kalojmë automatikisht në pamjen A4 për saktësi
+        function printMenu() {
+    // Kalojmë në A4 për rendering korrekt
     changeView('a4');
 
-    // 2. Një vonesë e vogël që Kanvasi të stabilizohet
     setTimeout(() => {
         const printContent = document.getElementById('canvas').innerHTML;
-        const originalContent = document.body.innerHTML;
+        const bizName = document.getElementById('p-biz-name').innerText;
+        const pColor = getComputedStyle(document.documentElement).getPropertyValue('--p').trim();
 
-        // Krijojmë një dritare të përkohshme për printim
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
-            
-                
-               
-                    <div class="view-a4" style="width: 210mm; height: 297mm; margin: auto;">
-                        ${printContent}
-                    
-                        window.onload = function() { 
-                            window.print(); 
-                            window.close(); 
-                        };
-                 
-            
+            <html>
+                <head>
+                    <title>Print - ${bizName}</title>
+                    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+                    <style>
+                        body { background: white; padding: 0; margin: 0; }
+                        .view-a4 { width: 210mm; height: 297mm; padding: 20mm; margin: auto; color: black; }
+                        @page { size: A4; margin: 0; }
+                        .print-accent { color: ${pColor} !important; border-color: ${pColor} !important; }
+                    </style>
+                </head>
+                <body>
+                    <div class="view-a4">${printContent}</div>
+                    <script>
+                        window.onload = () => { window.print(); window.close(); };
+                    <\/script>
+                </body>
+            </html>
         `);
         printWindow.document.close();
-    }, 500);
-} 
+    }, 600);
+}
 
+
+
+
+
+document.querySelectorAll('.nav-icon').forEach(icon => {
+    icon.addEventListener('click', function() {
+        gsap.fromTo(this, 
+            { scale: 0.8 }, 
+            { scale: 1, duration: 0.4, ease: "back.out(2)" }
+        );
+    });
+});
+
+
+
+
+
+        
         
     </script>
 </body>
 </html>
+
 
 
 
