@@ -12,34 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-
-
-/* Nav Bar - Spatial Dock (Consistency 10/10) */
-.nav-dock {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-    width: 90%; max-width: 450px; height: 80px;
-    background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(30px);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 40px;
-    display: flex; justify-content: space-around; align-items: center;
-    z-index: 9999; /* Sigurohet që qëndron mbi çdo gjë */
-}
-
-.nav-icon { 
-    color: #444; font-size: 1.2rem; 
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    display: flex; align-items: center; justify-content: center;
-    width: 60px; height: 60px; border-radius: 25px;
-}
-
-.nav-icon:hover { color: #fff; background: rgba(255,255,255,0.05); }
-
-.nav-icon.active { 
-    color: var(--p); 
-    transform: translateY(-8px); 
-    background: rgba(255, 92, 0, 0.05);
-}
-
-        
         :root { --p: #FF5C00; --bg: #080808; --card: rgba(18, 18, 18, 0.6); }
         
         body { 
@@ -48,39 +20,52 @@
             overflow-x: hidden; padding-bottom: 120px;
         }
 
-        /* Ambient Background Background */
+        /* Ambient Glow */
         .ambient-glow {
             position: fixed; top: 0; right: 0; width: 500px; height: 500px;
             background: radial-gradient(circle, rgba(255, 92, 0, 0.05) 0%, transparent 70%);
             z-index: -1; pointer-events: none;
         }
 
-        /* UI Elements Consistency */
+        /* UI Elements */
         .glass-card { 
             background: var(--card); 
             border: 1px solid rgba(255,255,255,0.03); 
             backdrop-filter: blur(40px);
             border-radius: 35px; padding: 30px; 
-            transition: transform 0.3s ease;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .glass-card:hover { border-color: rgba(255,255,255,0.1); }
+        .glass-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-5px); }
 
         .stat-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: #444; }
         .stat-value { font-size: 42px; font-weight: 800; letter-spacing: -2px; }
 
-        /* Custom Progress Bar */
-        .progress-track { width: 100%; h: 6px; background: #111; border-radius: 100px; overflow: hidden; margin-top: 12px; }
-        .progress-fill { height: 100%; background: var(--p); border-radius: 100px; transition: width 1s cubic-bezier(0.23, 1, 0.32, 1); }
+        /* Progress Bar Custom */
+        .progress-track { width: 100%; height: 6px; background: #111; border-radius: 100px; overflow: hidden; margin-top: 12px; }
+        .progress-fill { height: 100%; background: var(--p); border-radius: 100px; transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1); }
 
-        /* Nav Dock */
+        /* Nav Dock - Spatial Consistent 10/10 */
         .nav-dock {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            padding: 8px 30px; background: rgba(15, 15, 15, 0.8);
-            backdrop-filter: blur(40px) saturate(150%); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 100px; display: flex; gap: 30px; align-items: center; z-index: 2000;
+            width: 90%; max-width: 450px; height: 80px;
+            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 40px;
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 9999;
         }
-        .nav-link { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: #555; transition: 0.3s; }
-        .nav-link.active { color: var(--p); }
+
+        .nav-icon { 
+            color: #444; font-size: 1.2rem; 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            display: flex; align-items: center; justify-content: center;
+            width: 60px; height: 60px; border-radius: 25px;
+        }
+        .nav-icon:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-icon.active { 
+            color: var(--p); 
+            transform: translateY(-8px); 
+            background: rgba(255, 92, 0, 0.05);
+        }
 
         .live-tag {
             display: inline-flex; align-items: center; gap: 8px;
@@ -89,6 +74,14 @@
         }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Alert pulse animation */
+        .alert-pulse { animation: alertGlow 2s infinite; }
+        @keyframes alertGlow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 92, 0, 0.2); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 92, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 92, 0, 0); }
+        }
     </style>
 </head>
 <body class="no-scrollbar">
@@ -98,14 +91,23 @@
     <main class="max-w-5xl mx-auto px-6 pt-12">
         <header class="flex justify-between items-end mb-16">
             <div>
-                <p class="text-[10px] font-black tracking-[5px] text-zinc-600 uppercase mb-2">Central Intelligence</p>
+                <p class="text-[10px] font-black tracking-[5px] text-zinc-600 uppercase mb-2 text-animate">Central Intelligence</p>
                 <h1 class="text-4xl font-black italic uppercase tracking-tighter">Data <span class="text-orange-600">Analytics</span></h1>
             </div>
             <div class="text-right">
                 <div class="live-tag mb-2"><span class="w-1.5 h-1.5 bg-orange-600 rounded-full animate-ping"></span> Live Feed</div>
-                <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Përditësuar: Tani</p>
+                <p id="current-time" class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Përditësuar: Tani</p>
             </div>
         </header>
+
+        <div id="ai-insight" class="mb-8 hidden">
+            <div class="glass-card border-l-2 border-orange-600 alert-pulse bg-orange-600/5">
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-wand-magic-sparkles text-orange-600"></i>
+                    <p id="insight-text" class="text-[11px] font-medium text-zinc-300 uppercase tracking-wider"></p>
+                </div>
+            </div>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="glass-card border-l-2 border-orange-600">
@@ -152,40 +154,36 @@
                     <div>
                         <div class="flex justify-between text-[11px] font-black uppercase tracking-widest mb-2">
                             <span>Drekë (12:00 - 15:00)</span>
-                            <span class="text-orange-600">45%</span>
+                            <span class="text-orange-600" id="lunch-val">45%</span>
                         </div>
-                        <div class="progress-track"><div class="progress-fill" style="width: 45%"></div></div>
+                        <div class="progress-track"><div id="lunch-bar" class="progress-fill" style="width: 45%"></div></div>
                     </div>
                     <div>
                         <div class="flex justify-between text-[11px] font-black uppercase tracking-widest mb-2">
                             <span>Darkë (19:00 - 22:00)</span>
-                            <span class="text-orange-600">38%</span>
+                            <span class="text-orange-600" id="dinner-val">38%</span>
                         </div>
-                        <div class="progress-track"><div class="progress-fill" style="width: 38%"></div></div>
+                        <div class="progress-track"><div id="dinner-bar" class="progress-fill" style="width: 38%"></div></div>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card flex items-center justify-center border-dashed border-zinc-800">
+            <div class="glass-card flex items-center justify-center border-dashed border-zinc-800 cursor-pointer hover:bg-white/5 transition-all">
                 <div class="text-center">
                     <i class="fa-solid fa-file-export text-zinc-800 text-3xl mb-4"></i>
                     <p class="text-[10px] font-black uppercase tracking-widest text-zinc-600">Export Full Report (PDF)</p>
                 </div>
             </div>
-
-
-<nav class="nav-dock">
-    <a href="index.html" class="nav-icon"><i class="fa-solid fa-house"></i></a>
-    <a href="builder.html" class="nav-icon"><i class="fa-solid fa-cube"></i></a>
-    <a href="qr-code.html" class="nav-icon"><i class="fa-solid fa-qrcode"></i></a>
-    <a href="analytics.html" class="nav-icon active"><i class="fa-solid fa-chart-bar"></i></a>
-</nav>
-
-            
         </div>
     </main>
 
-   
+    <nav class="nav-dock">
+        <a href="index.html" class="nav-icon"><i class="fa-solid fa-house"></i></a>
+        <a href="builder.html" class="nav-icon"><i class="fa-solid fa-cube"></i></a>
+        <a href="qr-code.html" class="nav-icon"><i class="fa-solid fa-qrcode"></i></a>
+        <a href="analytics.html" class="nav-icon active"><i class="fa-solid fa-chart-bar"></i></a>
+    </nav>
+
     <script>
         let myChart;
 
@@ -238,15 +236,39 @@
 
         function refreshData() {
             const raw = localStorage.getItem('menuSmart_MasterData');
+            const insightDiv = document.getElementById('ai-insight');
+            const insightText = document.getElementById('insight-text');
+
             if(raw) {
                 const data = JSON.parse(raw);
                 
-                // Update Items Count
+                // 1. Llogaritja e artikujve
                 let totalItems = 0;
-                if (data.menu) data.menu.forEach(cat => totalItems += cat.items.length);
-                document.getElementById('total-items-stat').innerText = totalItems;
+                let emptyCategories = [];
+                if (data.menu) {
+                    data.menu.forEach(cat => {
+                        totalItems += cat.items.length;
+                        if(cat.items.length === 0) emptyCategories.push(cat.title);
+                    });
+                }
+                
+                // Animacion i numrave
+                gsap.to("#total-items-stat", {
+                    innerText: totalItems,
+                    duration: 1,
+                    snap: { innerText: 1 }
+                });
 
-                // Sync Colors
+                // 2. Inteligjenca (Insight Logic)
+                if(emptyCategories.length > 0) {
+                    insightDiv.classList.remove('hidden');
+                    insightText.innerText = `Kujdes: Kategoritë [${emptyCategories.join(', ')}] janë bosh. Shto artikuj te Builder.`;
+                } else if (totalItems > 0) {
+                    insightDiv.classList.remove('hidden');
+                    insightText.innerText = `Menuja është optimizuar. Duke pritur fluksin e drekës...`;
+                }
+
+                // 3. Sinkronizimi i ngjyrave
                 if(data.mainColor) {
                     document.documentElement.style.setProperty('--p', data.mainColor);
                     myChart.data.datasets[0].borderColor = data.mainColor;
@@ -259,13 +281,18 @@
             initChart();
             refreshData();
             
-            // GSAP Animations
+            // GSAP Animations (Perfeksionuar)
             gsap.from(".glass-card", { 
-                y: 40, opacity: 0, stagger: 0.15, duration: 1.2, ease: "expo.out" 
+                y: 60, opacity: 0, stagger: 0.1, duration: 1.4, ease: "expo.out" 
             });
+            
             gsap.from(".nav-dock", { 
-                y: 100, opacity: 0, duration: 1, delay: 0.8, ease: "expo.out" 
+                y: 100, opacity: 0, duration: 1.2, delay: 0.5, ease: "expo.out" 
             });
+
+            // Update Time
+            const now = new Date();
+            document.getElementById('current-time').innerText = `Përditësuar: ${now.getHours()}:${now.getMinutes()}`;
         };
     </script>
 </body>
