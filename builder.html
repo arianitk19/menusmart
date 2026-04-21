@@ -201,141 +201,133 @@ body {
 
     </style>
 </head>
-<body>
 
-    <div class="studio-container">
-        <aside class="control-center no-scrollbar">
+
+<body class="bg-[#080808] text-white overflow-hidden h-screen font-['Plus_Jakarta_Sans']">
+
+    <div class="studio-container grid grid-cols-[400px_1fr] h-screen">
+        
+        <aside class="control-center bg-[#0c0c0c] border-right border-white/5 overflow-y-auto p-10 z-20 no-scrollbar">
             <header class="flex items-center justify-between mb-12">
-                <div class="sync-tag"><span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Nis Arkitekturën e Menusë Tënde.</div>
-                <a href="index.html" class="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 border border-white/5 text-zinc-500 hover:text-white transition">
+                <div class="sync-tag">
+                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> 
+                    Studio Arkitekturore
+                </div>
+                <a href="index.html" class="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 border border-white/5 text-zinc-500 hover:text-white transition-all hover:rotate-[-10deg]">
                     <i class="fa-solid fa-arrow-left"></i>
                 </a>
             </header>
 
-            <h2 class="text-xs font-black uppercase tracking-[4px] text-zinc-600 mb-8">Fillo Ndërtimin Profesional →</h2>
+            <h2 class="text-[10px] font-black uppercase tracking-[4px] text-zinc-600 mb-8">Konfigurimi i Brandit</h2>
 
-
-
-
-
-
-<div id="fab-menu">
-    <button onclick="printMenu()" class="fab-item" style="background: #2563eb !important;">
-        <i class="fa-solid fa-print"></i>
-    </button>
-</div>
-
-  
-
-
-            
             <div class="ui-card">
-                <span class="ui-label">Përcakto Identitetin</span>
-                <input type="text" id="biz-name" oninput="sync()" placeholder="Emri i Biznesit" class="ui-input mb-4">
-                <button onclick="document.getElementById('logo-up').click()" class="w-full py-4 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition">Ngarko Logon</button>
-                <input type="file" id="logo-up" class="hidden" onchange="loadLogo(event)">
+                <span class="ui-label">Branding</span>
+                <input type="text" id="biz-name" oninput="MenuApp.sync()" placeholder="Emri i Biznesit" class="ui-input mb-4">
+                
+                <div class="relative group">
+                    <button onclick="document.getElementById('logo-up').click()" class="w-full py-4 border border-zinc-800 rounded-2xl text-[10px] font-black uppercase tracking-widest group-hover:bg-zinc-800 group-hover:border-zinc-700 transition-all duration-300">
+                        <i class="fa-solid fa-cloud-arrow-up mr-2 opacity-50"></i> Ngarko Logon
+                    </button>
+                    <input type="file" id="logo-up" class="hidden" onchange="MenuApp.actions.loadLogo(event)">
+                </div>
             </div>
 
             <div class="ui-card">
-                <span class="ui-label">Aktivizo Studion e Dizajnit →</span>
+                <span class="ui-label">Paleta e Ngjyrave</span>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
-                        <span class="text-[8px] font-bold block mb-3 opacity-30 uppercase tracking-widest">Primar</span>
-                        <input type="color" id="color-p" value="#FF5C00" oninput="sync()" class="w-full h-10 bg-transparent cursor-pointer rounded-lg overflow-hidden">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5 hover:border-white/10 transition">
+                        <span class="text-[8px] font-bold block mb-3 opacity-30 uppercase tracking-widest">Primare</span>
+                        <input type="color" id="color-p" value="#FF5C00" oninput="MenuApp.sync()" class="w-full h-10 bg-transparent cursor-pointer rounded-lg overflow-hidden">
                     </div>
-                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5 hover:border-white/10 transition">
                         <span class="text-[8px] font-bold block mb-3 opacity-30 uppercase tracking-widest">Teksti</span>
-                        <input type="color" id="color-txt" value="#000000" oninput="sync()" class="w-full h-10 bg-transparent cursor-pointer rounded-lg overflow-hidden">
+                        <input type="color" id="color-txt" value="#000000" oninput="MenuApp.sync()" class="w-full h-10 bg-transparent cursor-pointer rounded-lg overflow-hidden">
                     </div>
                 </div>
             </div>
 
-            <div class="ui-card border-l-2 border-orange-600">
-                <span class="ui-label" style="color: var(--p)">Struktura</span>
+            <div class="ui-card border-l-2 border-[#FF5C00]" id="structure-card">
+                <span class="ui-label" style="color: var(--p)">Struktura e Menuve</span>
                 <div class="flex gap-2">
-                    <input type="text" id="cat-input" placeholder="Kategoria (Psh: Pica)" class="ui-input">
-                    <button onclick="addCategory()" class="bg-orange-600 w-16 flex items-center justify-center rounded-xl hover:bg-orange-500 transition"><i class="fa-solid fa-plus text-white"></i></button>
+                    <input type="text" id="cat-input" placeholder="Kategoria (Psh: Pica)" class="ui-input focus:ring-1 ring-[#FF5C00]/20">
+                    <button onclick="MenuApp.actions.addCategory()" class="bg-[#FF5C00] w-14 flex items-center justify-center rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#FF5C00]/20">
+                        <i class="fa-solid fa-plus text-white"></i>
+                    </button>
                 </div>
             </div>
 
-            <div id="item-panel" class="ui-card hidden">
-                <span class="ui-label">Product Entry</span>
-                <select id="cat-selector" class="ui-input mb-3 bg-zinc-900 border-none"></select>
+            <div id="item-panel" class="ui-card hidden border-t border-white/5 bg-gradient-to-b from-zinc-900/50 to-transparent">
+                <span class="ui-label">Hyrja e Produkteve</span>
+                <select id="cat-selector" class="ui-input mb-3 bg-zinc-950 border-zinc-800 text-zinc-400 cursor-pointer"></select>
                 <input type="text" id="item-name" placeholder="Emri i artikullit" class="ui-input mb-3">
-                <input type="text" id="item-price" placeholder="Çmimi (€)" class="ui-input mb-4">
-                <button onclick="addItem()" class="btn-primary py-4 shadow-xl shadow-orange-600/10">Shto në Menu</button>
+                <div class="relative mb-4">
+                    <input type="text" id="item-price" placeholder="Çmimi" class="ui-input pr-10">
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold opacity-30">€</span>
+                </div>
+                <button onclick="MenuApp.actions.addItem()" class="btn-primary py-4 shadow-2xl shadow-[#FF5C00]/20 hover:brightness-110 transition-all">
+                    Shto në Menu
+                </button>
             </div>
         </aside>
 
-        <main class="workspace">
+        <main class="workspace relative bg-black flex items-center justify-center overflow-hidden">
             <div class="ambient-glow"></div>
 
-            <div class="absolute top-10 flex gap-4 bg-zinc-900/40 p-2 rounded-2xl border border-white/5 backdrop-blur-2xl z-50">
-                <button onclick="changeView('mobile')" id="btn-mobile" class="view-btn active"><i class="fa-solid fa-mobile-screen"></i></button>
-                <button onclick="changeView('desktop')" id="btn-desktop" class="view-btn"><i class="fa-solid fa-display"></i></button>
+            <div class="absolute top-10 flex gap-2 bg-[#121212]/60 p-2 rounded-[22px] border border-white/5 backdrop-blur-3xl z-50 shadow-2xl">
+                <button onclick="MenuApp.ui.changeView('mobile')" id="btn-mobile" class="view-btn active w-12 h-12 flex items-center justify-center rounded-2xl transition-all">
+                    <i class="fa-solid fa-mobile-screen"></i>
+                </button>
+                <button onclick="MenuApp.ui.changeView('desktop')" id="btn-desktop" class="view-btn w-12 h-12 flex items-center justify-center rounded-2xl transition-all">
+                    <i class="fa-solid fa-display"></i>
+                </button>
             </div>
 
-            <div id="canvas" class="canvas view-mobile no-scrollbar overflow-y-auto">
+            <div id="canvas" class="canvas view-mobile no-scrollbar shadow-[0_50px_100px_-20px_rgba(0,0,0,0.7)]">
                 <div class="p-16 text-center">
-                    <div id="logo-preview" class="w-24 h-24 mx-auto mb-6 hidden">
-                        <img id="p-logo-img" src="" class="w-full h-full object-contain">
+                    <div id="logo-preview" class="w-24 h-24 mx-auto mb-8 hidden">
+                        <img id="p-logo-img" src="" class="w-full h-full object-contain filter drop-shadow-md">
                     </div>
-                    <h2 id="p-biz-name" class="text-3xl font-black uppercase tracking-tighter italic">Business</h2>
-                    <div id="accent-line" class="w-12 h-1.5 bg-orange-600 mx-auto mt-6 rounded-full"></div>
+                    <h2 id="p-biz-name" class="text-3xl font-black uppercase tracking-tighter italic leading-none">Business</h2>
+                    <div id="accent-line" class="w-10 h-1.5 bg-[#FF5C00] mx-auto mt-6 rounded-full"></div>
                 </div>
 
                 <div id="p-menu" class="px-10 pb-32 space-y-12">
                     <div class="text-center py-20 opacity-10">
                         <i class="fa-solid fa-layer-group text-4xl mb-4"></i>
-                        <p class="text-[10px] font-black uppercase tracking-widest">Shto Kategoritë për të filluar</p>
+                        <p class="text-[10px] font-black uppercase tracking-[3px]">Studio është gati</p>
                     </div>
                 </div>
             </div>
 
-            <div class="absolute bottom-10 flex justify-between w-full px-12 opacity-20">
-                <span class="text-[9px] font-black tracking-[5px] uppercase">boneMENU - Krejt në nje vend</span>
-                <span class="text-[9px] font-black tracking-[5px] uppercase italic">10/10 Precision</span>
+            <div class="absolute bottom-10 flex justify-between w-full px-12 opacity-20 pointer-events-none">
+                <span class="text-[8px] font-black tracking-[4px] uppercase">boneMENU System v3.0</span>
+                <span class="text-[8px] font-black tracking-[4px] uppercase italic">Precision Engine</span>
             </div>
 
+            <div class="fab-container fixed bottom-32 right-10 z-[10000]">
+                <div class="fab-menu-items flex flex-col gap-4 mb-4">
+                    <button onclick="MenuApp.utils.print()" class="fab-item w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg scale-0 opacity-0 transition-all">
+                        <i class="fa-solid fa-print"></i>
+                    </button>
+                    <button onclick="MenuApp.ui.changeView('a4')" class="fab-item w-12 h-12 bg-white text-black rounded-full shadow-lg scale-0 opacity-0 transition-all">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </button>
+                </div>
+                <button id="fab-main" onclick="MenuApp.ui.toggleFab()" class="w-16 h-16 bg-[#FF5C00] rounded-full flex items-center justify-center text-xl shadow-2xl hover:scale-105 active:scale-90 transition-all">
+                    <i class="fa-solid fa-plus transition-transform duration-500" id="fab-icon"></i>
+                </button>
+            </div>
 
+            <nav class="nav-dock">
+                <a href="index.html" class="nav-icon"><i class="fa-solid fa-house"></i></a>
+                <a href="builder.html" class="nav-icon active"><i class="fa-solid fa-cube"></i></a>
+                <a href="qr-code.html" class="nav-icon"><i class="fa-solid fa-qrcode"></i></a>
+                <a href="analytics.html" class="nav-icon"><i class="fa-solid fa-chart-line"></i></a>
+            </nav>
 
-
-<div class="fab-container fixed bottom-[120px] right-6 z-[10000]">
-    <div id="fab-menu">
-        <button onclick="changeView('mobile')" class="fab-item">
-            <i class="fa-solid fa-mobile-screen"></i>
-        </button>
-        <button onclick="changeView('desktop')" class="fab-item">
-            <i class="fa-solid fa-display"></i>
-        </button>
-        <button onclick="changeView('a4')" class="fab-item">
-            <i class="fa-solid fa-file-invoice"></i>
-        </button>
-    </div>
-    
-    <button id="fab-main" onclick="toggleFab()">
-        <i class="fa-solid fa-plus" id="fab-icon"></i>
-    </button>
-</div>
-            
-     
-          
-            
-
-<nav class="nav-dock">
-    <a href="index.html" class="nav-icon"><i class="fa-solid fa-house"></i></a>
-    <a href="builder.html" class="nav-icon active"><i class="fa-solid fa-cube"></i></a>
-    <a href="qr-code.html" class="nav-icon"><i class="fa-solid fa-qrcode"></i></a>
-    <a href="analytics.html" class="nav-icon"><i class="fa-solid fa-chart-bar"></i></a>
-</nav>
-
-
-
-            
         </main>
     </div>
-
-
+</body>
 
     
     <script>
