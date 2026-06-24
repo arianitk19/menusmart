@@ -1,0 +1,22 @@
+{
+  "name": "boneMENU — Menu OS",
+  "short_name": "boneMENU",
+  "description": "Ndihmësi profesional për krijimin e menuve dixhitale dhe QR.",
+  "lang": "sq",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#0a0a0c",
+  "theme_color": "#0a0a0c",
+  "categories": ["food", "business", "productivity"],
+  "icons": [
+    { "src": "assets/icons/icon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "assets/icons/icon.svg", "type": "image/svg+xml", "sizes": "512x512", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Menu e Re", "url": "index.html#/builder" },
+    { "name": "QR", "url": "index.html#/qr" }
+  ]
+}
